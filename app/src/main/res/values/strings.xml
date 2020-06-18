@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ShoppingLists</string>
+
+    <!-- variables for activity Add Product -->
+    <string name="name">Name</string>
+    <string name="product_name_hint">Product name</string>
+    <string name="description">Description</string>
+    <string name="description_hint">Your note</string>
+
+    <!-- variables for recycler view -->
+    <string name="delete">DELETE</string>
+    <string name="info_deleted">removed from cart!</string>
+    <string name="undo">undo</string>
+
+    <!-- database consts -->
+    <string name="shoppingLists" translatable="false">ShoppingLists</string>
+
+
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lista Zakupów</string>
+    <string name="name">Nazwa</string>
+    <string name="product_name_hint">Nazwa produktu</string>
+    <string name="description">Notatka</string>
+    <string name="description_hint">Twoja notatka</string>
+    <string name="delete">USUŃ</string>
+    <string name="info_deleted">usunięto z listy!</string>
+    <string name="undo">cofnij</string>
+</resources>
