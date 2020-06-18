@@ -1,6 +1,6 @@
 ## Shopping Lists App
 
-This app allows to synchronize the list on several devices. Users can add and delete products and list updates it in real time.
+This app allows to synchronize the list on several devices. Users can add and delete products and the list updates in real time.
 
 ### Getting started
 
