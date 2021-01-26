@@ -1,17 +1,23 @@
 package com.liferiet.shoppinglists;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
+public class MainActivity extends AppCompatActivity
+        implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private List<Product> productList;
 
@@ -31,11 +39,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     private ListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private View outerLayout;
+    private String mUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setupSharedPreferences();
 
         productList = new ArrayList<>();
         outerLayout = findViewById(R.id.coordinator_layout);
@@ -64,6 +75,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 MainActivity.this.startActivity(newIntent);
             }
         });
+
+        setTitle("Hello " + mUserName);
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mUserName = sharedPreferences.getString(getString(R.string.user_name_key), "default");
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -79,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
                 Log.w("ShoppingListsApp", "getUser:onCancelled " + dataSnapshot.toString
                         ());
-                Log.w("ShoppingListsApp", "count = " + String.valueOf(dataSnapshot.getChildrenCount()) + " values " + dataSnapshot.getKey());
+                Log.w("ShoppingListsApp", "count = " + dataSnapshot.getChildrenCount() + " values " + dataSnapshot.getKey());
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Product product = data.getValue(Product.class);
                     productList.add(product);
@@ -159,4 +178,42 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     private DatabaseReference getReference(String path) {
         return FirebaseDatabase.getInstance().getReference(path);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unregister MainActivity as an OnPreferenceChangedListener to avoid any memory leaks.
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.user_name_key))) {
+            Toast.makeText(this, "Ktos zmienil nazwe uzytkownika!", Toast.LENGTH_SHORT).show();
+            mUserName = sharedPreferences.getString(key, "User");
+            setTitle("Hello " + mUserName);
+        } else {
+            Toast.makeText(this, "To mamy jakies inne opcje?", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
+            startActivity(startSettingsActivity);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
