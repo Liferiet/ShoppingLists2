@@ -2,6 +2,7 @@ package com.liferiet.shoppinglists.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,13 +22,12 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.liferiet.shoppinglists.data.FirebaseRepository;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
+import com.liferiet.shoppinglists.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +38,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        ListAdapter.OnListItemClickListener {
 
     private List<Product> productList;
     private FirebaseRepository repository;
+    private ActivityMainBinding mBinding;
 
-    private RecyclerView mRecyclerView;
     private ListAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private View outerLayout;
     private String mUserName;
 
     @Override
@@ -56,19 +55,20 @@ public class MainActivity extends AppCompatActivity
 
         setupSharedPreferences();
 
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
         repository = new FirebaseRepository(FirebaseDatabase.getInstance(),
                 getString(R.string.shoppingLists));
         productList = new ArrayList<>();
-        outerLayout = findViewById(R.id.coordinator_layout);
 
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mAdapter = new ListAdapter(productList);
+        mAdapter = new ListAdapter(productList, this);
 
-        mRecyclerView = findViewById(R.id.rvLists);
+        RecyclerView mRecyclerView = mBinding.rvLists;
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         mAdapter.notifyDataSetChanged();
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_new_product);
+        FloatingActionButton fab = (FloatingActionButton) mBinding.fabAddNewProduct;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
-        if (viewHolder instanceof ListAdapter.MyViewHolder) {
+        if (viewHolder instanceof ListAdapter.ListItemViewHolder) {
             // get the removed item name to display it in snack bar
             String name = productList.get(viewHolder.getAdapterPosition()).getName();
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity
 
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar
-                    .make(outerLayout, name + " " + getString(R.string.info_deleted), Snackbar
+                    .make(mBinding.coordinatorLayout, name + " " + getString(R.string.info_deleted), Snackbar
                             .LENGTH_LONG);
             snackbar.setAction(getString(R.string.undo).toUpperCase(), new View.OnClickListener() {
                 @Override
@@ -224,4 +224,12 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onListItemClick(Product product) {
+        /*Intent intent = new Intent(this, AddProductActivity.class);
+        intent.putExtra("product", product);
+        startActivity(intent);*/
+        Toast.makeText(this, "Wyswietli informacje o " + product.getName(), Toast.LENGTH_SHORT)
+                .show();
+    }
 }

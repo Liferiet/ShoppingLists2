@@ -1,5 +1,6 @@
 package com.liferiet.shoppinglists.ui;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.data.FirebaseRepository;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
+import com.liferiet.shoppinglists.databinding.ActivityAddProductBinding;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,16 +27,19 @@ import java.util.Map;
 public class AddProductActivity extends AppCompatActivity implements DatabaseReference.CompletionListener {
 
     private FirebaseRepository repository;
+    private ActivityAddProductBinding mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_product);
+
         repository = new FirebaseRepository(FirebaseDatabase.getInstance(),
                 getString(R.string.shoppingLists));
 
-        FloatingActionButton fab = findViewById(R.id.fab_upload_product);
+        FloatingActionButton fab = mBinding.fabUploadProduct;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,8 +49,8 @@ public class AddProductActivity extends AppCompatActivity implements DatabaseRef
     }
 
     public void saveProduct() {
-        EditText productName = findViewById(R.id.name_edit_text);
-        EditText productDescription = findViewById(R.id.description_edit_text);
+        EditText productName = mBinding.nameEditText;
+        EditText productDescription = mBinding.descriptionEditText;
 
         Product product = new Product();
         product.setName(productName.getText().toString());
