@@ -1,5 +1,6 @@
 package com.liferiet.shoppinglists.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,26 +16,34 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.data.FirebaseRepository;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
-import com.liferiet.shoppinglists.databinding.ActivityAddProductBinding;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.liferiet.shoppinglists.databinding.ActivityProductDetailsBinding;
 
 /**
  * Created by liferiet on 15.11.2018.
  */
 
-public class AddProductActivity extends AppCompatActivity implements DatabaseReference.CompletionListener {
+public class ProductDetailsActivity extends AppCompatActivity implements DatabaseReference.CompletionListener {
 
+    public static final String EXTRA_PRODUCT = "product";
     private FirebaseRepository repository;
-    private ActivityAddProductBinding mBinding;
+    private ActivityProductDetailsBinding mBinding;
+    private Product product;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_product);
+        setContentView(R.layout.activity_product_details);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_product);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_product_details);
+
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(EXTRA_PRODUCT)) {
+            // mButton.setText(R.string.update_button);
+            product = intent.getParcelableExtra(EXTRA_PRODUCT);
+            mBinding.nameEditText.setText(product.getName());
+            mBinding.descriptionEditText.setText(product.getMessage());
+
+        }
 
         repository = new FirebaseRepository(FirebaseDatabase.getInstance(),
                 getString(R.string.shoppingLists));

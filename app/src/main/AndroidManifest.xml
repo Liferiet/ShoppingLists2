@@ -26,7 +26,7 @@
                 android:value=".ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.AddProductActivity"
+            android:name=".ui.ProductDetailsActivity"
             android:windowSoftInputMode="adjustResize" />
     </application>
 

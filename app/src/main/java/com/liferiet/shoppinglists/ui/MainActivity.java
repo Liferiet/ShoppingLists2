@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         ListAdapter.OnListItemClickListener {
+
+    public static final String EXTRA_PRODUCT = "product";
 
     private List<Product> productList;
     private FirebaseRepository repository;
@@ -81,8 +84,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent newIntent = new Intent(MainActivity.this,AddProductActivity.class);
-                MainActivity.this.startActivity(newIntent);
+                Intent intent = new Intent(MainActivity.this, ProductDetailsActivity.class);
+                intent.putExtra("user", mUserName);
+                MainActivity.this.startActivity(intent);
             }
         });
 
@@ -226,9 +230,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListItemClick(Product product) {
-        /*Intent intent = new Intent(this, AddProductActivity.class);
-        intent.putExtra("product", product);
-        startActivity(intent);*/
+        Intent intent = new Intent(this, ProductDetailsActivity.class);
+        intent.putExtra(EXTRA_PRODUCT, (Parcelable) product);
+        intent.putExtra("user", mUserName);
+        startActivity(intent);
         Toast.makeText(this, "Wyswietli informacje o " + product.getName(), Toast.LENGTH_SHORT)
                 .show();
     }
