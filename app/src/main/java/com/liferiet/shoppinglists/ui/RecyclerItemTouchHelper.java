@@ -1,4 +1,4 @@
-package com.liferiet.shoppinglists;
+package com.liferiet.shoppinglists.ui;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;

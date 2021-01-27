@@ -1,4 +1,4 @@
-package com.liferiet.shoppinglists;
+package com.liferiet.shoppinglists.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,15 +25,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.liferiet.shoppinglists.data.FirebaseRepository;
+import com.liferiet.shoppinglists.data.Product;
+import com.liferiet.shoppinglists.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Created by liferiet on 26.01.2021.
+ */
 
 public class MainActivity extends AppCompatActivity
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private List<Product> productList;
+    private FirebaseRepository repository;
 
     private RecyclerView mRecyclerView;
     private ListAdapter mAdapter;
@@ -48,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
         setupSharedPreferences();
 
+        repository = new FirebaseRepository(FirebaseDatabase.getInstance(),
+                getString(R.string.shoppingLists));
         productList = new ArrayList<>();
         outerLayout = findViewById(R.id.coordinator_layout);
 
@@ -81,7 +91,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserName = sharedPreferences.getString(getString(R.string.user_name_key), "default");
+        mUserName = sharedPreferences.getString(getString(R.string.user_name_key), getString(R.string.user_name_default));
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -89,9 +99,7 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-
-        db.getReference(getString(R.string.shoppingLists)).addValueEventListener(new ValueEventListener() {
+        repository.getReference(getString(R.string.shoppingLists)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 productList.clear();
@@ -147,7 +155,7 @@ public class MainActivity extends AppCompatActivity
                     if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
                             event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
 
-                        removeProductFromDatabase(deletedItem);
+                        repository.removeProductFromDatabase(deletedItem);
                     }
                 }
             });
@@ -156,7 +164,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void removeProductFromDatabase(Product product) {
+/*    private void removeProductFromDatabase(Product product) {
         DatabaseReference dbRef = getReference(getString(R.string.shoppingLists));
         Query query = dbRef.orderByChild("name").equalTo(product.getName());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -173,11 +181,11 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-    }
+    }*/
 
-    private DatabaseReference getReference(String path) {
+/*    private DatabaseReference getReference(String path) {
         return FirebaseDatabase.getInstance().getReference(path);
-    }
+    }*/
 
     @Override
     protected void onDestroy() {

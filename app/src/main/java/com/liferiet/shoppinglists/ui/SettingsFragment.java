@@ -1,4 +1,4 @@
-package com.liferiet.shoppinglists;
+package com.liferiet.shoppinglists.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +10,11 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
+import com.liferiet.shoppinglists.R;
+
+/**
+ * Created by liferiet on 26.01.2021.
+ */
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {

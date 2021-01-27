@@ -1,4 +1,4 @@
-package com.liferiet.shoppinglists;
+package com.liferiet.shoppinglists.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.liferiet.shoppinglists.data.Product;
+import com.liferiet.shoppinglists.R;
 
 import java.util.List;
 
