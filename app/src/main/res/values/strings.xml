@@ -18,6 +18,11 @@
     <string name="user_name_default">User Name</string>
     <string name="user_name_key">user name key</string>
     <string name="action_settings">Settings</string>
+    <string name="details_description">Note</string>
+    <string name="details_name">Product name</string>
+    <string name="details_name_hint">Product name</string>
+    <string name="details_user">Added by</string>
+    <string name="details_date">Created</string>
 
 
 </resources>

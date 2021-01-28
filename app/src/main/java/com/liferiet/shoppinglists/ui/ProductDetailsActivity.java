@@ -1,14 +1,17 @@
 package com.liferiet.shoppinglists.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,6 +20,9 @@ import com.liferiet.shoppinglists.data.FirebaseRepository;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
 import com.liferiet.shoppinglists.databinding.ActivityProductDetailsBinding;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by liferiet on 15.11.2018.
@@ -36,13 +42,23 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_product_details);
 
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_PRODUCT)) {
             // mButton.setText(R.string.update_button);
             product = intent.getParcelableExtra(EXTRA_PRODUCT);
             mBinding.nameEditText.setText(product.getName());
             mBinding.descriptionEditText.setText(product.getMessage());
+            mBinding.dateTextView.setText(product.getDate());
+            mBinding.addedByTextView.setText(product.getUser());
+        } else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String user = sharedPreferences.getString(getString(R.string.user_name_key), getString(R.string.user_name_default));
 
+            Date date = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            mBinding.dateTextView.setText(formatter.format(date));
+            mBinding.addedByTextView.setText(user);
         }
 
         repository = new FirebaseRepository(FirebaseDatabase.getInstance(),
@@ -58,12 +74,16 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
     }
 
     public void saveProduct() {
-        EditText productName = mBinding.nameEditText;
-        EditText productDescription = mBinding.descriptionEditText;
+        String productName = mBinding.nameEditText.getText().toString();
+        String productDescription = mBinding.descriptionEditText.getText().toString();
+        String date = mBinding.dateTextView.getText().toString();
+        String user = mBinding.addedByTextView.getText().toString();
 
         Product product = new Product();
-        product.setName(productName.getText().toString());
-        product.setMessage(productDescription.getText().toString());
+        product.setName(productName);
+        product.setMessage(productDescription);
+        product.setUser(user);
+        product.setDate(date);
 
         repository.saveProduct(product, this);
     }
