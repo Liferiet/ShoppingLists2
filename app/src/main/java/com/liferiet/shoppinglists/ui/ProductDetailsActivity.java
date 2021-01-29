@@ -33,7 +33,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
     public static final String EXTRA_PRODUCT = "product";
     private FirebaseRepository repository;
     private ActivityProductDetailsBinding mBinding;
-    private Product product;
+    private String productId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,12 +41,14 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
         setContentView(R.layout.activity_product_details);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_product_details);
-
+        productId = "";
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_PRODUCT)) {
             // mButton.setText(R.string.update_button);
+            Product product;
             product = intent.getParcelableExtra(EXTRA_PRODUCT);
+            productId = product.getId();
             mBinding.nameEditText.setText(product.getName());
             mBinding.descriptionEditText.setText(product.getMessage());
             mBinding.dateTextView.setText(product.getDate());
@@ -80,6 +82,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
         String user = mBinding.addedByTextView.getText().toString();
 
         Product product = new Product();
+        product.setId(productId);
         product.setName(productName);
         product.setMessage(productDescription);
         product.setUser(user);

@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 public class Product implements Serializable, Parcelable {
 
+    private String id;
     private String name;
     private String message;
     private String date;
@@ -30,6 +31,14 @@ public class Product implements Serializable, Parcelable {
 
     public Product(String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -79,6 +88,7 @@ public class Product implements Serializable, Parcelable {
     }
 
     protected Product(Parcel in) {
+        setId(in.readString());
         setName(in.readString());
         setMessage(in.readString());
         setDate(in.readString());
@@ -87,6 +97,7 @@ public class Product implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(getId());
         parcel.writeString(getName());
         parcel.writeString(getMessage());
         parcel.writeString(getDate());

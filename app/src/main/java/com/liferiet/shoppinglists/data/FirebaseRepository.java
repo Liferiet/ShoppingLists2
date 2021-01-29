@@ -22,6 +22,10 @@ public class FirebaseRepository {
         this.listReference = listReference;
     }
 
+    public DatabaseReference getReference(String path) {
+        return FirebaseDatabase.getInstance().getReference(path);
+    }
+
     public void removeProductFromDatabase(Product product) {
         DatabaseReference dbRef = getReference(listReference);
         Query query = dbRef.orderByChild("name").equalTo(product.getName());
@@ -41,16 +45,17 @@ public class FirebaseRepository {
         });
     }
 
-    public DatabaseReference getReference(String path) {
-        return FirebaseDatabase.getInstance().getReference(path);
-    }
-
     public void saveProduct(Product product, DatabaseReference.CompletionListener completionListener) {
-        String key = db.getReference(listReference).push().getKey();
+        DatabaseReference reference = getReference(listReference);
+        if (product.getId().isEmpty()) {
+            String key = reference.push().getKey();
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(key, product.toFirebaseObject());
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put(key, product.toFirebaseObject());
+            db.getReference(listReference).updateChildren(childUpdates, completionListener);
 
-        db.getReference(listReference).updateChildren(childUpdates, completionListener);
+        } else {
+            reference.child(product.getId()).setValue(product.toFirebaseObject(), completionListener);
+        }
     }
 }

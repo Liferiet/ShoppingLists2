@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity
                 Log.w("ShoppingListsApp", "count = " + dataSnapshot.getChildrenCount() + " values " + dataSnapshot.getKey());
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Product product = data.getValue(Product.class);
+                    if (product != null )product.setId(data.getKey());
                     productList.add(product);
                 }
 
