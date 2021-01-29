@@ -2,13 +2,11 @@ package com.liferiet.shoppinglists.ui;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
@@ -22,6 +20,7 @@ import java.util.List;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHolder> {
 
+    private static final String TAG = ListAdapter.class.getSimpleName();
     private List<Product> mProductList;
     private OnListItemClickListener mOnListItemClickListener;
 
@@ -95,11 +94,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHo
         void bind(int position) {
             Product product = mProductList.get(position);
             binding.listItemName.setText(product.getName());
+            binding.listItemMessage.setText(product.getMessage());
         }
 
         @Override
         public void onClick(View view) {
-            mOnListItemClickListener.onListItemClick(mProductList.get(getAdapterPosition()));
+            try {
+                mOnListItemClickListener.onListItemClick(mProductList.get(getAdapterPosition()));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Log.v(TAG, "onClick listener index out of bond");
+            }
         }
     }
 }
