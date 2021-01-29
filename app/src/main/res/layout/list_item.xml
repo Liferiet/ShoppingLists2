@@ -36,7 +36,7 @@
 
     </RelativeLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,6 +66,6 @@
             app:layout_constraintTop_toTopOf="@+id/list_item_name"
             tools:text="Note about product" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
 </layout>
