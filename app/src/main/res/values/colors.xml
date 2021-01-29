@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="bg_row_background">#fa315b</color>
+    <color name="list_item_message">#b2b2b2</color>
 </resources>

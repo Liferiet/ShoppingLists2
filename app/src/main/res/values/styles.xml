@@ -13,4 +13,8 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="ListItemMessage">
+        <item name="android:textColor">@color/list_item_message</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>
