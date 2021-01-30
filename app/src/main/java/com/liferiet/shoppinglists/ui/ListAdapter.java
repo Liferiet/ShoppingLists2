@@ -84,14 +84,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHo
         this.mProductList = mProductList;
     }
 
-    public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
         public ListItemBinding binding;
 
         public ListItemViewHolder(ListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         void bind(int position) {
@@ -102,11 +102,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHo
         }
 
         @Override
-        public void onClick(View view) {
+        public boolean onLongClick(View view) {
             try {
                 mOnListItemClickListener.onListItemClick(mProductList.get(getAdapterPosition()));
+                return true;
             } catch (ArrayIndexOutOfBoundsException e) {
                 Log.v(TAG, "onClick listener index out of bond");
+                return false;
             }
         }
     }

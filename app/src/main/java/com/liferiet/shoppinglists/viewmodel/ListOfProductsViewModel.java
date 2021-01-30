@@ -26,7 +26,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     private FirebaseRepository mRepository;
     private String mListReference;
     private MutableLiveData<List<Product>> mProductList;
-    private String mUserName;
+    private MutableLiveData<String> mUserName;
     private SharedPreferences mPreferences;
 
     public ListOfProductsViewModel(FirebaseDatabase db, String listReference, SharedPreferences preferences) {
@@ -36,11 +36,11 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
         mRepository = FirebaseRepository.getInstance(db, mListReference);
         mPreferences = preferences;
 
-        mUserName = preferences.getString("user name key", "default user name"); // TODO uzyc jakos stringow z resource'ow
+        mUserName = new MutableLiveData<>();
+        mUserName.postValue(preferences.getString("user name key", "default user name")); // TODO uzyc jakos stringow z resource'ow
         preferences.registerOnSharedPreferenceChangeListener(this);
 
         mProductList = new MutableLiveData<>();
-
         observeProductChanges();
     }
 
@@ -70,7 +70,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
         });
     }
 
-    public String getUserName() {
+    public LiveData<String> getUserName() {
         return mUserName;
     }
 
@@ -86,7 +86,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String userNameKey = "user name key"; // TODO uzyc jakos stringa z resource'ow
         if (key.equals(userNameKey)) {
-            mUserName = sharedPreferences.getString(key, "User");
+            mUserName.postValue(sharedPreferences.getString(key, "User"));
         }
     }
 

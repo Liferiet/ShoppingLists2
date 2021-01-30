@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:longClickable="true">
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -40,8 +41,8 @@
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:padding="@dimen/padd_10" >
+        android:padding="@dimen/padd_10"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/list_item_name"

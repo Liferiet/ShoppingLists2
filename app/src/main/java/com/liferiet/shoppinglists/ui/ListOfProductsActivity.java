@@ -70,6 +70,10 @@ public class ListOfProductsActivity extends AppCompatActivity
             mRecyclerView.setAdapter(mAdapter);
         });
 
+        mViewModel.getUserName().observe(this, name -> {
+            setTitle("Hello " + name);
+        });
+
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
@@ -81,7 +85,7 @@ public class ListOfProductsActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ListOfProductsActivity.this, ProductDetailsActivity.class);
-                intent.putExtra("user", mViewModel.getUserName());
+                intent.putExtra("user", mViewModel.getUserName().getValue());
                 ListOfProductsActivity.this.startActivity(intent);
             }
         });
@@ -154,7 +158,7 @@ public class ListOfProductsActivity extends AppCompatActivity
     public void onListItemClick(Product product) {
         Intent intent = new Intent(this, ProductDetailsActivity.class);
         intent.putExtra(EXTRA_PRODUCT, (Parcelable) product);
-        intent.putExtra("user", mViewModel.getUserName());
+        intent.putExtra("user", mViewModel.getUserName().getValue());
         startActivity(intent);
         Toast.makeText(this, "Wyswietli informacje o " + product.getName(), Toast.LENGTH_SHORT)
                 .show();
