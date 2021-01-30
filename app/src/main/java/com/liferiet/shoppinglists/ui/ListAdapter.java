@@ -24,8 +24,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHo
     private List<Product> mProductList;
     private OnListItemClickListener mOnListItemClickListener;
 
-    public ListAdapter(List<Product> productList, OnListItemClickListener listener) {
-        mProductList = productList;
+    public ListAdapter(OnListItemClickListener listener) {
         mOnListItemClickListener = listener;
     }
 
@@ -77,13 +76,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHo
         notifyItemInserted(position);
     }
 
+    public List<Product> getProductList() {
+        return mProductList;
+    }
+
+    public void setProductList(List<Product> mProductList) {
+        this.mProductList = mProductList;
+    }
+
     public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ListItemBinding binding;
-/*      TODO delete this
-        public TextView productName;
-        public RelativeLayout viewBackground;
-        public RelativeLayout viewForeground;*/
 
         public ListItemViewHolder(ListItemBinding binding) {
             super(binding.getRoot());
@@ -95,6 +98,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListItemViewHo
             Product product = mProductList.get(position);
             binding.listItemName.setText(product.getName());
             binding.listItemMessage.setText(product.getMessage());
+            binding.listItemUser.setText(product.getUser().substring(0, 2));
         }
 
         @Override

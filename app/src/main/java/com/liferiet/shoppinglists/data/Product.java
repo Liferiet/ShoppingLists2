@@ -1,6 +1,5 @@
 package com.liferiet.shoppinglists.data;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 

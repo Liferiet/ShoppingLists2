@@ -16,7 +16,7 @@
     <string name="shoppingLists" translatable="false">ShoppingLists</string>
     <string name="user_name">User name</string>
     <string name="user_name_default">User Name</string>
-    <string name="user_name_key">user name key</string>
+    <string name="user_name_key" translatable="false">user name key</string>
     <string name="action_settings">Settings</string>
     <string name="details_description">Note</string>
     <string name="details_name">Product name</string>

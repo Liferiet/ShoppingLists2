@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.MainActivity"
+        <activity android:name=".ui.ListOfProductsActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,10 +20,10 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.ListOfProductsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value=".ui.ListOfProductsActivity" />
         </activity>
         <activity
             android:name=".ui.ProductDetailsActivity"

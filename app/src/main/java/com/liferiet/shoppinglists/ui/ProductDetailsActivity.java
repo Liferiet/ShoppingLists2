@@ -46,11 +46,13 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
             // mButton.setText(R.string.update_button);
             Product product;
             product = intent.getParcelableExtra(EXTRA_PRODUCT);
-            productId = product.getId();
-            mBinding.nameEditText.setText(product.getName());
-            mBinding.descriptionEditText.setText(product.getMessage());
-            mBinding.dateTextView.setText(product.getDate());
-            mBinding.addedByTextView.setText(product.getUser());
+            if (product != null) {
+                productId = product.getId();
+                mBinding.nameEditText.setText(product.getName());
+                mBinding.descriptionEditText.setText(product.getMessage());
+                mBinding.dateTextView.setText(product.getDate());
+                mBinding.addedByTextView.setText(product.getUser());
+            }
         } else {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             String user = sharedPreferences.getString(getString(R.string.user_name_key), getString(R.string.user_name_default));
@@ -61,8 +63,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
             mBinding.addedByTextView.setText(user);
         }
 
-        repository = new FirebaseRepository(FirebaseDatabase.getInstance(),
-                getString(R.string.shoppingLists));
+        repository = FirebaseRepository.getInstance(FirebaseDatabase.getInstance(), getString(R.string.shoppingLists)); //TODO
 
         FloatingActionButton fab = mBinding.fabUploadProduct;
         fab.setOnClickListener(new View.OnClickListener() {

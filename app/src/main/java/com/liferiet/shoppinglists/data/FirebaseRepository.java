@@ -14,12 +14,25 @@ import java.util.Map;
 
 public class FirebaseRepository {
 
+    private static FirebaseRepository sInstance;
     private FirebaseDatabase db;
     private String listReference;
 
-    public FirebaseRepository(FirebaseDatabase db, String listReference) {
+
+    private FirebaseRepository(FirebaseDatabase db, String listReference) {
         this.db = db;
         this.listReference = listReference;
+    }
+
+    public static FirebaseRepository getInstance(final FirebaseDatabase database, String listReference) {
+        if (sInstance == null) {
+            synchronized (FirebaseRepository.class) {
+                if (sInstance == null) {
+                    sInstance = new FirebaseRepository(database, listReference);
+                }
+            }
+        }
+        return sInstance;
     }
 
     public DatabaseReference getReference(String path) {
