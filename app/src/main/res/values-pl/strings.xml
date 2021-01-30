@@ -10,8 +10,10 @@
     <string name="undo">cofnij</string>
     <string name="user_name">User name</string>
     <string name="user_name_default">User Name</string>
-    <string name="user_name_key">user name key</string>
-    <string name="action_settings">Settings</string>
-    <string name="details_description">Note</string>
-    <string name="details_user">Added by</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="details_description">Notatka</string>
+    <string name="details_name">Nazwa produktu</string>
+    <string name="details_name_hint">Nazwa produktu</string>
+    <string name="details_user">Dodane przez</string>
+    <string name="details_date">Utworzono</string>
 </resources>
