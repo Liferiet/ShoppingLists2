@@ -16,9 +16,9 @@ public class ProductDetailsViewModel extends ViewModel {
     private Long mLastTimeClicked;
 
     public ProductDetailsViewModel(FirebaseDatabase db, String listReference) {
-
         mListReference = listReference;
         mRepository = FirebaseRepository.getInstance(db, mListReference);
+        mLastTimeClicked = 0L;
     }
 
     public void saveProduct(Product product, DatabaseReference.CompletionListener listener) {
