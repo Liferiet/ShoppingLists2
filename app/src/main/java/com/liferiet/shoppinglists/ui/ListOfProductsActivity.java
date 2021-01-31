@@ -89,8 +89,6 @@ public class ListOfProductsActivity extends AppCompatActivity
                 ListOfProductsActivity.this.startActivity(intent);
             }
         });
-
-        setTitle("Hello " + mViewModel.getUserName());
     }
 
     @Override
