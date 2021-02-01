@@ -27,7 +27,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
             // final View foregroundView = ((ListAdapter.ListItemViewHolder) viewHolder).viewForeground;
-            final View foregroundView = ((ListAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+            final View foregroundView = ((ProductAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
             getDefaultUIUtil().onSelected(foregroundView);
         }
     }
@@ -36,14 +36,14 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
                                 RecyclerView.ViewHolder viewHolder, float dX, float dY,
                                 int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((ListAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+        final View foregroundView = ((ProductAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((ListAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+        final View foregroundView = ((ProductAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
         getDefaultUIUtil().clearView(foregroundView);
     }
 
@@ -51,7 +51,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onChildDraw(Canvas c, RecyclerView recyclerView,
                             RecyclerView.ViewHolder viewHolder, float dX, float dY,
                             int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((ListAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+        final View foregroundView = ((ProductAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
 
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);

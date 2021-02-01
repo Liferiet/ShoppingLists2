@@ -48,6 +48,10 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
         return mProductList;
     }
 
+    public void setListReference(String listReference) {
+        this.mListReference = listReference;
+    }
+
     private void observeProductChanges() {
         getListReference().addValueEventListener(new ValueEventListener() {
             @Override

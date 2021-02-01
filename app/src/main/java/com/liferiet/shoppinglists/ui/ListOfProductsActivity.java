@@ -3,11 +3,12 @@ package com.liferiet.shoppinglists.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
+
 import android.graphics.Color;
 import android.os.Parcelable;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -17,12 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
@@ -30,20 +33,23 @@ import com.liferiet.shoppinglists.databinding.ActivityListOfProductsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModelFactory;
 
+import java.util.List;
+
 /**
  * Created by liferiet on 26.01.2021.
  */
 
 public class ListOfProductsActivity extends AppCompatActivity
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
-        ListAdapter.OnListItemClickListener {
+        ProductAdapter.OnListItemClickListener {
 
+    private static final String TAG = ListOfProductsActivity.class.getSimpleName();
     public static final String EXTRA_PRODUCT = "product";
 
     private ActivityListOfProductsBinding mBinding;
     private ListOfProductsViewModel mViewModel;
 
-    private ListAdapter mAdapter;
+    private ProductAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,7 @@ public class ListOfProductsActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new ListAdapter( this);
+        mAdapter = new ProductAdapter( this);
 
         mViewModel.getProductList().observe(this, products -> {
             mAdapter.setProductList(products);
@@ -94,14 +100,16 @@ public class ListOfProductsActivity extends AppCompatActivity
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
-/*        TODO do odkomentowania
-            if (viewHolder instanceof ListAdapter.ListItemViewHolder) {
+        if (viewHolder instanceof ProductAdapter.ListItemViewHolder) {
+            List<Product> productList = mViewModel.getProductList().getValue();
+
+            if (productList == null) return;
+            final int deletedIndex = viewHolder.getAdapterPosition();
             // get the removed item name to display it in snack bar
-            String name = productList.get(viewHolder.getAdapterPosition()).getName();
+            String name = productList.get(deletedIndex).getName();
 
             // backup of removed item for undo purpose
-            final Product deletedItem = productList.get(viewHolder.getAdapterPosition());
-            final int deletedIndex = viewHolder.getAdapterPosition();
+            final Product deletedItem = productList.get(deletedIndex);
 
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
@@ -131,7 +139,7 @@ public class ListOfProductsActivity extends AppCompatActivity
             });
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
-        }*/
+        }
     }
 
     @Override

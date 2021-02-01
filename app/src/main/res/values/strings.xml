@@ -23,6 +23,7 @@
     <string name="details_name_hint">Product name</string>
     <string name="details_user">Added by</string>
     <string name="details_date">Created</string>
+    <string name="add_list">Add list</string>
 
 
 </resources>
