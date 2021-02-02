@@ -45,6 +45,8 @@ public class ListOfProductsActivity extends AppCompatActivity
 
     private static final String TAG = ListOfProductsActivity.class.getSimpleName();
     public static final String EXTRA_PRODUCT = "product";
+    private static final String LIST_REFERENCE = "list_reference";
+    private static final String LIST_NAME = "list_name";
 
     private ActivityListOfProductsBinding mBinding;
     private ListOfProductsViewModel mViewModel;
@@ -56,10 +58,21 @@ public class ListOfProductsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_products);
 
+        Intent intent = getIntent();
+        if (intent == null || !intent.hasExtra(LIST_NAME) || !intent.hasExtra(LIST_REFERENCE)) {
+            finish();
+            return;
+        }
+        String reference = intent.getStringExtra(LIST_REFERENCE);
+        String listName = intent.getStringExtra(LIST_NAME);
+        //mViewModel.setListReference(reference);
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ListOfProductsViewModelFactory factory = new ListOfProductsViewModelFactory(
-                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists), sharedPreferences);
+                FirebaseDatabase.getInstance(), reference, sharedPreferences);
         mViewModel = new ViewModelProvider(this, factory).get(ListOfProductsViewModel.class);
+
+        mViewModel.setListName(listName);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_list_of_products);
 
@@ -76,9 +89,11 @@ public class ListOfProductsActivity extends AppCompatActivity
             mRecyclerView.setAdapter(mAdapter);
         });
 
-        mViewModel.getUserName().observe(this, name -> {
+/*        mViewModel.getUserName().observe(this, name -> {
             setTitle("Hello " + name);
-        });
+        });*/
+
+        setTitle(mViewModel.getListName());
 
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0,

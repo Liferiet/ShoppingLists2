@@ -2,12 +2,10 @@ package com.liferiet.shoppinglists.viewmodel;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.liferiet.shoppinglists.data.FirebaseRepository;
+import com.liferiet.shoppinglists.data.ShoppingList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
 public class ListOfListsViewModel extends ViewModel {
 
     private static final String TAG = ListOfListsViewModel.class.getSimpleName();
-    private List<String> mLists;
+    private List<ShoppingList> mShoppingLists;
 
     public ListOfListsViewModel(FirebaseDatabase db) {
         // TODO
@@ -23,12 +21,18 @@ public class ListOfListsViewModel extends ViewModel {
         Log.d(TAG, "Preparing listOfLists viewModel");
         //mLists = new MutableLiveData<>();
 
-        ArrayList<String> tempList = new ArrayList<>();
-        tempList.add("ShoppingLists");
-        mLists = tempList;
+        ArrayList<ShoppingList> tempShoppingList = new ArrayList<>();
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setName("Domowa");
+        shoppingList.setKey("ShoppingLists");
+        tempShoppingList.add(shoppingList);
+
+        mShoppingLists = tempShoppingList;
     }
 
-    public List<String> getLists() {
-        return mLists;
+
+
+    public List<ShoppingList> getLists() {
+        return mShoppingLists;
     }
 }

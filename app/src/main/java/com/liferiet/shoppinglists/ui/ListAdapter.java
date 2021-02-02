@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liferiet.shoppinglists.R;
+import com.liferiet.shoppinglists.data.ShoppingList;
 import com.liferiet.shoppinglists.databinding.ListItemBinding;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder> {
 
     private static final String TAG = ListAdapter.class.getSimpleName();
-    private List<String> mListList;
+    private List<ShoppingList> mListShoppingList;
     private ListAdapter.OnListItemClickListener mOnListItemClickListener;
 
     public ListAdapter(ListAdapter.OnListItemClickListener mOnListItemClickListener) {
@@ -29,7 +30,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
      * Interface for class that will handle click events on view holders
      */
     interface OnListItemClickListener {
-        void onListItemClick(String string);
+        void onListItemClick(ShoppingList shoppingList);
     }
 
     @NonNull
@@ -55,12 +56,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         return getListList().size();
     }
 
-    public void setListList(List<String> listList) {
-        this.mListList = listList;
+    public void setListList(List<ShoppingList> listShoppingList) {
+        this.mListShoppingList = listShoppingList;
     }
 
-    public List<String> getListList() {
-        return mListList;
+    public List<ShoppingList> getListList() {
+        return mListShoppingList;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -74,13 +75,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         }
 
         void bind(int position) {
-            binding.listName.setText(mListList.get(position));
+            binding.listName.setText(mListShoppingList.get(position).getName());
         }
 
         @Override
         public void onClick(View view) {
             try {
-                mOnListItemClickListener.onListItemClick(mListList.get(getAdapterPosition()));
+                mOnListItemClickListener.onListItemClick(mListShoppingList.get(getAdapterPosition()));
             } catch (ArrayIndexOutOfBoundsException e) {
                 Log.v(TAG, "onClick listener index out of bond");
             }

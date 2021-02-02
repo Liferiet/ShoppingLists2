@@ -16,5 +16,5 @@
     <string name="details_name_hint">Nazwa produktu</string>
     <string name="details_user">Dodane przez</string>
     <string name="details_date">Utworzono</string>
-    <string name="add_list">Add list</string>
+    <string name="add_list">Add shoppingList</string>
 </resources>

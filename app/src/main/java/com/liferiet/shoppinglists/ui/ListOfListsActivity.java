@@ -1,9 +1,7 @@
 package com.liferiet.shoppinglists.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,21 +9,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.R;
+import com.liferiet.shoppinglists.data.ShoppingList;
 import com.liferiet.shoppinglists.databinding.ActivityListOfListsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModelFactory;
-import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModel;
 
 public class ListOfListsActivity extends AppCompatActivity implements ListAdapter.OnListItemClickListener {
 
     private static final String TAG = ListOfListsActivity.class.getSimpleName();
     private static final String LIST_REFERENCE = "list_reference";
+    private static final String LIST_NAME = "list_name";
     private ListOfListsViewModel mViewModel;
     private ActivityListOfListsBinding mBinding;
 
@@ -62,11 +60,12 @@ public class ListOfListsActivity extends AppCompatActivity implements ListAdapte
     }
 
     @Override
-    public void onListItemClick(String string) {
+    public void onListItemClick(ShoppingList list) {
         Intent intent = new Intent(this, ListOfProductsActivity.class);
-        intent.putExtra(LIST_REFERENCE, string);
+        intent.putExtra(LIST_REFERENCE, list.getKey());
+        intent.putExtra(LIST_NAME, list.getName());
         startActivity(intent);
-        Toast.makeText(this, "Otworzy liste: " + string, Toast.LENGTH_SHORT)
+        Toast.makeText(this, "Otworzy liste: " + list.getName(), Toast.LENGTH_SHORT)
                 .show();
     }
 }

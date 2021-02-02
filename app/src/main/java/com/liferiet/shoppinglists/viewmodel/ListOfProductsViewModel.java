@@ -28,6 +28,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     private MutableLiveData<List<Product>> mProductList;
     private MutableLiveData<String> mUserName;
     private SharedPreferences mPreferences;
+    private String mListName;
 
     public ListOfProductsViewModel(FirebaseDatabase db, String listReference, SharedPreferences preferences) {
 
@@ -98,5 +99,13 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     protected void onCleared() {
         super.onCleared();
         mPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    public void setListName(String listName) {
+        mListName = listName;
+    }
+
+    public String getListName() {
+        return mListName;
     }
 }
