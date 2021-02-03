@@ -37,7 +37,7 @@ public class ProductDetailsViewModel extends ViewModel {
         return mLastTimeClicked;
     }
 
-    public void setLastTimeClicked(Long mLastTimeClicked) {
-        this.mLastTimeClicked = mLastTimeClicked;
+    public void setLastTimeClicked(Long lastTimeClicked) {
+        this.mLastTimeClicked = lastTimeClicked;
     }
 }

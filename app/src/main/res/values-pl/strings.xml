@@ -17,4 +17,6 @@
     <string name="details_user">Dodane przez</string>
     <string name="details_date">Utworzono</string>
     <string name="add_list">Add shoppingList</string>
+    <string name="add_list_alert_title">List name</string>
+    <string name="dialog_list_name_hint">Home shoppinglist</string>
 </resources>
