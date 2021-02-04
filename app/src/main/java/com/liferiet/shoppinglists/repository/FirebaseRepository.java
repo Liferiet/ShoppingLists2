@@ -1,4 +1,6 @@
-package com.liferiet.shoppinglists.data;
+package com.liferiet.shoppinglists.repository;
+
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -8,27 +10,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.liferiet.shoppinglists.data.Product;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class FirebaseRepository {
 
+    private static final String TAG = FirebaseRepository.class.getSimpleName();
     private static FirebaseRepository sInstance;
     private FirebaseDatabase db;
-    private String listReference;
+    private String listKey;
 
 
-    private FirebaseRepository(FirebaseDatabase db, String listReference) {
+    private FirebaseRepository(FirebaseDatabase db, String listKey) {
         this.db = db;
-        this.listReference = listReference;
+        this.listKey = listKey;
     }
 
-    public static FirebaseRepository getInstance(final FirebaseDatabase database, String listReference) {
+    public static FirebaseRepository getInstance(final FirebaseDatabase database, String listKey) {
         if (sInstance == null) {
             synchronized (FirebaseRepository.class) {
                 if (sInstance == null) {
-                    sInstance = new FirebaseRepository(database, listReference);
+                    sInstance = new FirebaseRepository(database, listKey);
                 }
             }
         }
@@ -40,7 +44,7 @@ public class FirebaseRepository {
     }
 
     public void removeProductFromDatabase(Product product) {
-        DatabaseReference dbRef = getReference(listReference);
+        DatabaseReference dbRef = getReference(listKey + "/products");
         Query query = dbRef.orderByChild("name").equalTo(product.getName());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -59,16 +63,18 @@ public class FirebaseRepository {
     }
 
     public void saveProduct(Product product, DatabaseReference.CompletionListener completionListener) {
-        DatabaseReference reference = getReference(listReference);
+        String path = "/products";
+        DatabaseReference reference = getReference(listKey).child(path);
+
         if (product.getId().isEmpty()) {
             String key = reference.push().getKey();
 
             Map<String, Object> childUpdates = new HashMap<>();
             childUpdates.put(key, product.toFirebaseObject());
-            db.getReference(listReference).updateChildren(childUpdates, completionListener);
+            reference.updateChildren(childUpdates, completionListener);
 
         } else {
-            reference.child(product.getId()).setValue(product.toFirebaseObject(), completionListener);
+            reference.setValue(product.toFirebaseObject(), completionListener);
         }
     }
 }

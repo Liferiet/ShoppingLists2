@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.liferiet.shoppinglists.data.FirebaseRepository;
+import com.liferiet.shoppinglists.repository.FirebaseRepository;
 import com.liferiet.shoppinglists.data.Product;
 
 public class ProductDetailsViewModel extends ViewModel {

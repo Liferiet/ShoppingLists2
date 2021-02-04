@@ -1,6 +1,5 @@
 package com.liferiet.shoppinglists.ui;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,14 +7,12 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,8 +30,9 @@ public class ListOfListsActivity extends AppCompatActivity
         implements ListAdapter.OnListItemClickListener {
 
     private static final String TAG = ListOfListsActivity.class.getSimpleName();
-    private static final String LIST_REFERENCE = "list_reference";
+    private static final String LIST_KEY = "list_key";
     private static final String LIST_NAME = "list_name";
+
     private ListOfListsViewModel mViewModel;
     private ActivityListOfListsBinding mBinding;
 
@@ -47,7 +45,7 @@ public class ListOfListsActivity extends AppCompatActivity
         setContentView(R.layout.activity_list_of_lists);
 
         ListOfListsViewModelFactory factory = new ListOfListsViewModelFactory(
-                FirebaseDatabase.getInstance());
+                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists));
         mViewModel = new ViewModelProvider(this, factory).get(ListOfListsViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_list_of_lists);
@@ -76,17 +74,17 @@ public class ListOfListsActivity extends AppCompatActivity
     @Override
     public void onListItemClick(ShoppingList list) {
         Intent intent = new Intent(this, ListOfProductsActivity.class);
-        intent.putExtra(LIST_REFERENCE, list.getKey());
+        intent.putExtra(LIST_KEY, getString(R.string.shoppingLists) + "/" + list.getKey());
         intent.putExtra(LIST_NAME, list.getName());
         startActivity(intent);
         Toast.makeText(this, "Otworzy liste: " + list.getName(), Toast.LENGTH_SHORT)
                 .show();
     }
 
-    public void onDialogPositiveClick(String listName) {
-        Toast.makeText(this, "now need to create a list... with title: " + listName, Toast.LENGTH_SHORT).show();
-    }
-
+    /**
+     *  Setup OnClickListener to fab, which after click event creates new AlertDialog,
+     *  shows it, and change positiveClickButton onClickListener right away
+     */
     private void setupFabOnClickListener() {
         mBinding.fabAddNewList.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -145,4 +143,10 @@ public class ListOfListsActivity extends AppCompatActivity
         });
     }
 
+    public void onDialogPositiveClick(String listName) {
+        mViewModel.createNewList(listName);
+        /* // Uncomment this if list have to be opened immediately after creation
+        ShoppingList list = mViewModel.getLists().get(mViewModel.getLists().size() - 1);
+        onListItemClick(list);*/
+    }
 }

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,7 +44,7 @@ public class ListOfProductsActivity extends AppCompatActivity
 
     private static final String TAG = ListOfProductsActivity.class.getSimpleName();
     public static final String EXTRA_PRODUCT = "product";
-    private static final String LIST_REFERENCE = "list_reference";
+    private static final String LIST_KEY = "list_key";
     private static final String LIST_NAME = "list_name";
 
     private ActivityListOfProductsBinding mBinding;
@@ -59,11 +58,11 @@ public class ListOfProductsActivity extends AppCompatActivity
         setContentView(R.layout.activity_list_of_products);
 
         Intent intent = getIntent();
-        if (intent == null || !intent.hasExtra(LIST_NAME) || !intent.hasExtra(LIST_REFERENCE)) {
+        if (intent == null || !intent.hasExtra(LIST_NAME) || !intent.hasExtra(LIST_KEY)) {
             finish();
             return;
         }
-        String reference = intent.getStringExtra(LIST_REFERENCE);
+        String reference = intent.getStringExtra(LIST_KEY);
         String listName = intent.getStringExtra(LIST_NAME);
         //mViewModel.setListReference(reference);
 
@@ -89,23 +88,23 @@ public class ListOfProductsActivity extends AppCompatActivity
             mRecyclerView.setAdapter(mAdapter);
         });
 
-/*        mViewModel.getUserName().observe(this, name -> {
-            setTitle("Hello " + name);
-        });*/
-
         setTitle(mViewModel.getListName());
-
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
 
 
+        setupFabOnClickListener();
+    }
+
+    private void setupFabOnClickListener() {
         FloatingActionButton fab = (FloatingActionButton) mBinding.fabAddNewProduct;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ListOfProductsActivity.this, ProductDetailsActivity.class);
+                intent.putExtra(LIST_KEY, mViewModel.getListKey());
                 intent.putExtra("user", mViewModel.getUserName().getValue());
                 ListOfProductsActivity.this.startActivity(intent);
             }

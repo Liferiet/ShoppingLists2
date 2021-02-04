@@ -13,7 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.liferiet.shoppinglists.data.FirebaseRepository;
+import com.liferiet.shoppinglists.repository.FirebaseRepository;
 import com.liferiet.shoppinglists.data.Product;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     private static final String TAG = ListOfProductsViewModel.class.getSimpleName();
 
     private FirebaseRepository mRepository;
-    private String mListReference;
+    private String mListKey;
     private MutableLiveData<List<Product>> mProductList;
     private MutableLiveData<String> mUserName;
     private SharedPreferences mPreferences;
@@ -33,8 +33,8 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     public ListOfProductsViewModel(FirebaseDatabase db, String listReference, SharedPreferences preferences) {
 
         Log.d(TAG, "Preparing listOfProducts viewModel");
-        mListReference = listReference;
-        mRepository = FirebaseRepository.getInstance(db, mListReference);
+        mListKey = listReference;
+        mRepository = FirebaseRepository.getInstance(db, mListKey);
         mPreferences = preferences;
 
         mUserName = new MutableLiveData<>();
@@ -49,12 +49,8 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
         return mProductList;
     }
 
-    public void setListReference(String listReference) {
-        this.mListReference = listReference;
-    }
-
     private void observeProductChanges() {
-        getListReference().addValueEventListener(new ValueEventListener() {
+        mRepository.getReference(mListKey).child("products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.w(TAG,  "getUser:onCancelled " + dataSnapshot.toString());
@@ -83,8 +79,8 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
         mRepository.removeProductFromDatabase(product);
     }
 
-    public DatabaseReference getListReference() {
-        return mRepository.getReference(mListReference);
+    public String getListKey() {
+        return mListKey;
     }
 
     @Override
