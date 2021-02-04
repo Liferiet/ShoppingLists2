@@ -36,8 +36,9 @@ import java.util.Locale;
 public class ProductDetailsActivity extends AppCompatActivity implements DatabaseReference.CompletionListener {
 
     private static final String TAG = ProductDetailsActivity.class.getSimpleName();
-    public static final String EXTRA_PRODUCT = "product";
-    public static final String USER = "user";
+    private static final String EXTRA_PRODUCT = "product";
+    private static final String USER = "user";
+    private static final String LIST_KEY = "list_key";
 
     private ProductDetailsViewModel mViewModel;
     private ActivityProductDetailsBinding mBinding;
@@ -49,15 +50,20 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_product_details);
 
-        ProductDetailsViewModelFactory factory = new ProductDetailsViewModelFactory(
-                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists));
-        mViewModel = new ViewModelProvider(this, factory).get(ProductDetailsViewModel.class);
-
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(EXTRA_PRODUCT)) {
-            mViewModel.setProduct(intent.getParcelableExtra(EXTRA_PRODUCT));
-        } else if (intent != null && intent.hasExtra(USER)) {
-            Product product = new Product();
+        if (intent == null || !intent.hasExtra(LIST_KEY)){
+            finish();
+            return;
+        }
+
+        String listKey = intent.getStringExtra(LIST_KEY);
+
+        Product product = null;
+
+        if (intent.hasExtra(EXTRA_PRODUCT)) {
+            product = intent.getParcelableExtra(EXTRA_PRODUCT);
+        } else if (intent.hasExtra(USER)) {
+            product = new Product();
             product.setId("");
             product.setUser(intent.getStringExtra(USER));
 
@@ -65,34 +71,42 @@ public class ProductDetailsActivity extends AppCompatActivity implements Databas
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", new Locale("en"));
             product.setDate(formatter.format(date));
 
-            mViewModel.setProduct(product);
         } else {
             finish();
+            return;
         }
 
-        setupUI();
+        ProductDetailsViewModelFactory factory = new ProductDetailsViewModelFactory(
+                FirebaseDatabase.getInstance(), listKey);
+        mViewModel = new ViewModelProvider(this, factory).get(ProductDetailsViewModel.class);
 
-        ActionBar actionBar = this.getSupportActionBar();
+        mViewModel.setProduct(product);
 
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        setupFields();
+        setupActionBar();
+        setupFabOnClickListener();
+    }
 
+    private void setupFabOnClickListener() {
         FloatingActionButton fab = mBinding.fabUploadProduct;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (SystemClock.elapsedRealtime() - mViewModel.getLastTimeClicked() < 3000){
-                    return;
-                }
-                mViewModel.setLastTimeClicked(SystemClock.elapsedRealtime());
-                Log.d(TAG, "Save button clicked");
-                saveProduct();
+        fab.setOnClickListener(view -> {
+            if (SystemClock.elapsedRealtime() - mViewModel.getLastTimeClicked() < 3000){
+                return;
             }
+            mViewModel.setLastTimeClicked(SystemClock.elapsedRealtime());
+            Log.d(TAG, "Save button clicked");
+            saveProduct();
         });
     }
 
-    private void setupUI() {
+    private void setupActionBar() {
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void setupFields() {
         Product product = mViewModel.getProduct();
         if (product == null) return;
 
