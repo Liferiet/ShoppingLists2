@@ -1,5 +1,6 @@
 package com.liferiet.shoppinglists.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,9 @@ import com.liferiet.shoppinglists.databinding.ActivityListOfListsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModelFactory;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 public class ListOfListsActivity extends AppCompatActivity
         implements ListAdapter.OnListItemClickListener {
 
@@ -45,7 +49,7 @@ public class ListOfListsActivity extends AppCompatActivity
         setContentView(R.layout.activity_list_of_lists);
 
         ListOfListsViewModelFactory factory = new ListOfListsViewModelFactory(
-                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists));
+                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists), getApplication());
         mViewModel = new ViewModelProvider(this, factory).get(ListOfListsViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_list_of_lists);
