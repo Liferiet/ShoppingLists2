@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.data.ShoppingList;
@@ -70,11 +69,13 @@ public class ListOfListsViewModel extends AndroidViewModel {
 
     private boolean writeListToFile(ShoppingList list) {
         try {
-            FileOutputStream fileOutputStream = getApplication().openFileOutput(mFileName, Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = getApplication().openFileOutput(mFileName, Context.MODE_APPEND);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             String data = list.getKey() + ":" + list.getName() + "\n";
+
             outputStreamWriter.write(data);
             outputStreamWriter.close();
+            fileOutputStream.close();
             return true;
         }
         catch (IOException e) {
@@ -98,11 +99,10 @@ public class ListOfListsViewModel extends AndroidViewModel {
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
                      oneListArray = receiveString.split(":");
                      ShoppingList list = new ShoppingList();
-                     list.setKey(oneListArray[0]);
-                     list.setName(oneListArray[1]);
+                     list.setKey(oneListArray[0].trim());
+                     list.setName(oneListArray[1].trim());
                      shoppingLists.add(list);
                 }
-
                 inputStream.close();
             }
         }
