@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,13 +63,13 @@ public class ListOfProductsActivity extends AppCompatActivity
             finish();
             return;
         }
-        String reference = intent.getStringExtra(LIST_KEY);
+        String listKey = intent.getStringExtra(LIST_KEY);
         String listName = intent.getStringExtra(LIST_NAME);
         //mViewModel.setListReference(reference);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ListOfProductsViewModelFactory factory = new ListOfProductsViewModelFactory(
-                FirebaseDatabase.getInstance(), reference, sharedPreferences);
+                FirebaseDatabase.getInstance(), listKey, sharedPreferences);
         mViewModel = new ViewModelProvider(this, factory).get(ListOfProductsViewModel.class);
 
         mViewModel.setListName(listName);
@@ -94,6 +95,7 @@ public class ListOfProductsActivity extends AppCompatActivity
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
 
+        Log.d(TAG, "Repository list key: " + mViewModel.getListKey());
 
         setupFabOnClickListener();
     }
@@ -106,7 +108,7 @@ public class ListOfProductsActivity extends AppCompatActivity
                 Intent intent = new Intent(ListOfProductsActivity.this, ProductDetailsActivity.class);
                 intent.putExtra(LIST_KEY, mViewModel.getListKey());
                 intent.putExtra("user", mViewModel.getUserName().getValue());
-                ListOfProductsActivity.this.startActivity(intent);
+                startActivity(intent);
             }
         });
     }

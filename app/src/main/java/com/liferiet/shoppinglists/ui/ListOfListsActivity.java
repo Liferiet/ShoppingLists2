@@ -1,6 +1,5 @@
 package com.liferiet.shoppinglists.ui;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,9 +25,6 @@ import com.liferiet.shoppinglists.data.ShoppingList;
 import com.liferiet.shoppinglists.databinding.ActivityListOfListsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModelFactory;
-
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 public class ListOfListsActivity extends AppCompatActivity
         implements ListAdapter.OnListItemClickListener {
@@ -78,10 +74,10 @@ public class ListOfListsActivity extends AppCompatActivity
     @Override
     public void onListItemClick(ShoppingList list) {
         Intent intent = new Intent(this, ListOfProductsActivity.class);
-        intent.putExtra(LIST_KEY, getString(R.string.shoppingLists) + "/" + list.getKey());
+        intent.putExtra(LIST_KEY, mViewModel.getDbPath() + "/" + list.getKey());
         intent.putExtra(LIST_NAME, list.getName());
         startActivity(intent);
-        Toast.makeText(this, "Otworzy liste: " + list.getName(), Toast.LENGTH_SHORT)
+        Toast.makeText(this, "Otworzy liste: " + list.getName() + " klucz: " + list.getKey(), Toast.LENGTH_LONG)
                 .show();
     }
 

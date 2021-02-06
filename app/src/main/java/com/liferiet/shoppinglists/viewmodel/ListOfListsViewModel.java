@@ -23,24 +23,22 @@ import java.util.List;
 public class ListOfListsViewModel extends AndroidViewModel {
 
     private static final String TAG = ListOfListsViewModel.class.getSimpleName();
+    private static final String FILENAME = "lists.txt";
+
     private List<ShoppingList> mShoppingLists;
     private ListOfListsRepository mRepository;
-    private String mDbReference;
     private Long mLastTimeClicked;
-    private String mFileName;
 
-    public ListOfListsViewModel(FirebaseDatabase db, String dbReference, Application application) {
+    public ListOfListsViewModel(FirebaseDatabase db, String dbPath, Application application) {
         super(application);
         // TODO
 
         Log.d(TAG, "Preparing listOfLists viewModel");
         //mLists = new MutableLiveData<>();
 
-        mFileName = "lists.txt";
         mShoppingLists = readListsFromFile();
         Log.d(TAG, "Lists: " + mShoppingLists.toString());
-        mDbReference = dbReference;
-        mRepository = ListOfListsRepository.getInstance(db, mDbReference);
+        mRepository = ListOfListsRepository.getInstance(db, dbPath);
         mLastTimeClicked = 0L;
     }
 
@@ -59,6 +57,10 @@ public class ListOfListsViewModel extends AndroidViewModel {
         return mShoppingLists;
     }
 
+    public String getDbPath() {
+        return mRepository.getDbPath();
+    }
+
     public Long getLastTimeClicked() {
         return mLastTimeClicked;
     }
@@ -69,7 +71,7 @@ public class ListOfListsViewModel extends AndroidViewModel {
 
     private boolean writeListToFile(ShoppingList list) {
         try {
-            FileOutputStream fileOutputStream = getApplication().openFileOutput(mFileName, Context.MODE_APPEND);
+            FileOutputStream fileOutputStream = getApplication().openFileOutput(FILENAME, Context.MODE_APPEND);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             String data = list.getKey() + ":" + list.getName() + "\n";
 
@@ -87,7 +89,7 @@ public class ListOfListsViewModel extends AndroidViewModel {
     private List<ShoppingList> readListsFromFile() {
         ArrayList<ShoppingList> shoppingLists = new ArrayList<>();
         try {
-            InputStream inputStream = getApplication().openFileInput(mFileName);
+            InputStream inputStream = getApplication().openFileInput(FILENAME);
             Log.d(TAG, "Reading lists from file");
 
             if ( inputStream != null ) {

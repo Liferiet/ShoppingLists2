@@ -10,10 +10,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.liferiet.shoppinglists.repository.FirebaseRepository;
+import com.liferiet.shoppinglists.repository.ListOfProductsRepository;
 import com.liferiet.shoppinglists.data.Product;
 
 import java.util.ArrayList;
@@ -23,18 +22,16 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
 
     private static final String TAG = ListOfProductsViewModel.class.getSimpleName();
 
-    private FirebaseRepository mRepository;
-    private String mListKey;
+    private ListOfProductsRepository mRepository;
     private MutableLiveData<List<Product>> mProductList;
     private MutableLiveData<String> mUserName;
     private SharedPreferences mPreferences;
     private String mListName;
 
-    public ListOfProductsViewModel(FirebaseDatabase db, String listReference, SharedPreferences preferences) {
+    public ListOfProductsViewModel(FirebaseDatabase db, String listKey, SharedPreferences preferences) {
 
         Log.d(TAG, "Preparing listOfProducts viewModel");
-        mListKey = listReference;
-        mRepository = FirebaseRepository.getInstance(db, mListKey);
+        mRepository = ListOfProductsRepository.getInstance(db, listKey);
         mPreferences = preferences;
 
         mUserName = new MutableLiveData<>();
@@ -50,7 +47,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     }
 
     private void observeProductChanges() {
-        mRepository.getReference(mListKey).child("products").addValueEventListener(new ValueEventListener() {
+        mRepository.getReference(mRepository.getListKey()).child("products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.w(TAG,  "getUser:onCancelled " + dataSnapshot.toString());
@@ -80,7 +77,7 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
     }
 
     public String getListKey() {
-        return mListKey;
+        return mRepository.getListKey();
     }
 
     @Override

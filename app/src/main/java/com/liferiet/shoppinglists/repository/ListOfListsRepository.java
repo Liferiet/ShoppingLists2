@@ -6,17 +6,17 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ListOfListsRepository {
     private static ListOfListsRepository sInstance;
     private FirebaseDatabase db;
-    private String mReference;
+    private String mDbPath;
 
 
     private ListOfListsRepository(FirebaseDatabase db, String reference) {
         this.db = db;
-        this.mReference = reference;
+        this.mDbPath = reference;
     }
 
     public static ListOfListsRepository getInstance(final FirebaseDatabase database, String reference) {
         if (sInstance == null) {
-            synchronized (FirebaseRepository.class) {
+            synchronized (ProductDetailsRepository.class) {
                 if (sInstance == null) {
                     sInstance = new ListOfListsRepository(database, reference);
                 }
@@ -25,15 +25,18 @@ public class ListOfListsRepository {
         return sInstance;
     }
 
-    public DatabaseReference getReference(String path) {
-        return FirebaseDatabase.getInstance().getReference(path);
+    private DatabaseReference getReference() {
+        return db.getReference(mDbPath);
     }
 
     public String createListReference(String name) {
-        DatabaseReference dbReference = getReference(mReference);
-        String key = dbReference.push().getKey();
+        String key = getReference().push().getKey();
 
-        dbReference.child(key + "/name").setValue(name);
+        getReference().child(key + "/name").setValue(name);
         return key;
+    }
+
+    public String getDbPath() {
+        return mDbPath;
     }
 }
