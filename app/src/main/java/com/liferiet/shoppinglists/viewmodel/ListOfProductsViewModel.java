@@ -50,7 +50,6 @@ public class ListOfProductsViewModel extends ViewModel implements SharedPreferen
         mRepository.getReference(mRepository.getListKey()).child("products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.w(TAG,  "getUser:onCancelled " + dataSnapshot.toString());
                 Log.w(TAG, "count = " + dataSnapshot.getChildrenCount() + " values " + dataSnapshot.getKey());
                 ArrayList<Product> products = new ArrayList<>();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {

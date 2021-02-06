@@ -179,6 +179,7 @@ public class ListOfProductsActivity extends AppCompatActivity
     @Override
     public void onListItemClick(Product product) {
         Intent intent = new Intent(this, ProductDetailsActivity.class);
+        intent.putExtra(LIST_KEY, mViewModel.getListKey());
         intent.putExtra(EXTRA_PRODUCT, (Parcelable) product);
         intent.putExtra("user", mViewModel.getUserName().getValue());
         startActivity(intent);

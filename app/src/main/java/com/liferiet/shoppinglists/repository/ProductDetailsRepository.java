@@ -50,7 +50,7 @@ public class ProductDetailsRepository {
             reference.updateChildren(childUpdates, completionListener);
 
         } else {
-            reference.setValue(product.toFirebaseObject(), completionListener);
+            reference.child(product.getId()).setValue(product.toFirebaseObject(), completionListener);
         }
     }
 }
