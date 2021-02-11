@@ -27,8 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.R;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.databinding.FragmentProductsBinding;
-import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModel;
-import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModelFactory;
+import com.liferiet.shoppinglists.viewmodel.ProductsViewModel;
+import com.liferiet.shoppinglists.viewmodel.ProductsViewModelFactory;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ import java.util.List;
 
 public class ProductsFragment extends Fragment
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
-        ProductAdapter.OnListItemClickListener {
+        ProductsAdapter.OnListItemClickListener {
 
     private static final String TAG = ProductsFragment.class.getSimpleName();
     public static final String EXTRA_PRODUCT = "product";
@@ -47,9 +47,9 @@ public class ProductsFragment extends Fragment
     private static final String USER_NAME = "user_name";
 
     private FragmentProductsBinding mBinding;
-    private ListOfProductsViewModel mViewModel;
+    private ProductsViewModel mViewModel;
 
-    private ProductAdapter mAdapter;
+    private ProductsAdapter mAdapter;
 
     @Nullable
     @Override
@@ -72,9 +72,9 @@ public class ProductsFragment extends Fragment
         String listName = bundle.getString(LIST_NAME);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        ListOfProductsViewModelFactory factory = new ListOfProductsViewModelFactory(
+        ProductsViewModelFactory factory = new ProductsViewModelFactory(
                 FirebaseDatabase.getInstance(), listKey, sharedPreferences);
-        mViewModel = new ViewModelProvider(this, factory).get(ListOfProductsViewModel.class);
+        mViewModel = new ViewModelProvider(this, factory).get(ProductsViewModel.class);
 
         mViewModel.setListName(listName);
 
@@ -84,7 +84,7 @@ public class ProductsFragment extends Fragment
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new ProductAdapter( this);
+        mAdapter = new ProductsAdapter( this);
 
         mViewModel.getProductList().observe(getActivity(), products -> {
             mAdapter.setProductList(products);
@@ -128,7 +128,7 @@ public class ProductsFragment extends Fragment
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
-        if (viewHolder instanceof ProductAdapter.ListItemViewHolder) {
+        if (viewHolder instanceof ProductsAdapter.ListItemViewHolder) {
             List<Product> productList = mViewModel.getProductList().getValue();
 
             if (productList == null) return;

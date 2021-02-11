@@ -1,10 +1,9 @@
 package com.liferiet.shoppinglists.ui;
 
-import androidx.core.app.NavUtils;
+import android.os.Bundle;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.liferiet.shoppinglists.R;
 

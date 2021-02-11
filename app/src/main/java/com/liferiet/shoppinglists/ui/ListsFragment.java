@@ -27,20 +27,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.R;
 import com.liferiet.shoppinglists.data.ShoppingList;
 import com.liferiet.shoppinglists.databinding.FragmentListsBinding;
-import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModel;
-import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModelFactory;
+import com.liferiet.shoppinglists.viewmodel.ListsViewModel;
+import com.liferiet.shoppinglists.viewmodel.ListsViewModelFactory;
 
 public class ListsFragment extends Fragment
-        implements ListAdapter.OnListItemClickListener {
+        implements ListsAdapter.OnListItemClickListener {
 
     private static final String TAG = ListsFragment.class.getSimpleName();
     private static final String LIST_KEY = "list_key";
     private static final String LIST_NAME = "list_name";
 
-    private ListOfListsViewModel mViewModel;
+    private ListsViewModel mViewModel;
     private FragmentListsBinding mBinding;
 
-    private ListAdapter mAdapter;
+    private ListsAdapter mAdapter;
 
     @Nullable
     @Override
@@ -55,16 +55,16 @@ public class ListsFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListOfListsViewModelFactory factory = new ListOfListsViewModelFactory(
+        ListsViewModelFactory factory = new ListsViewModelFactory(
                 FirebaseDatabase.getInstance(), getString(R.string.shoppingLists), getActivity().getApplication());
-        mViewModel = new ViewModelProvider(this, factory).get(ListOfListsViewModel.class);
+        mViewModel = new ViewModelProvider(this, factory).get(ListsViewModel.class);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         RecyclerView mRecyclerView = mBinding.rvLists;
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new ListAdapter( this);
+        mAdapter = new ListsAdapter( this);
 
         mAdapter.setListList(mViewModel.getLists());
         mRecyclerView.setAdapter(mAdapter);

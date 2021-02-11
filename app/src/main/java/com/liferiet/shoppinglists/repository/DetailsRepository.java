@@ -1,7 +1,5 @@
 package com.liferiet.shoppinglists.repository;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.data.Product;
@@ -9,24 +7,24 @@ import com.liferiet.shoppinglists.data.Product;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProductDetailsRepository {
+public class DetailsRepository {
 
-    private static final String TAG = ProductDetailsRepository.class.getSimpleName();
-    private static ProductDetailsRepository sInstance;
+    private static final String TAG = DetailsRepository.class.getSimpleName();
+    private static DetailsRepository sInstance;
     private FirebaseDatabase db;
     private String listKey;
 
 
-    private ProductDetailsRepository(FirebaseDatabase db, String listKey) {
+    private DetailsRepository(FirebaseDatabase db, String listKey) {
         this.db = db;
         this.listKey = listKey;
     }
 
-    public static ProductDetailsRepository getInstance(final FirebaseDatabase database, String listKey) {
+    public static DetailsRepository getInstance(final FirebaseDatabase database, String listKey) {
         if (sInstance == null) {
-            synchronized (ProductDetailsRepository.class) {
+            synchronized (DetailsRepository.class) {
                 if (sInstance == null) {
-                    sInstance = new ProductDetailsRepository(database, listKey);
+                    sInstance = new DetailsRepository(database, listKey);
                 }
             }
         }

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
-import com.liferiet.shoppinglists.databinding.ListItemBinding;
 import com.liferiet.shoppinglists.databinding.ProductItemBinding;
 
 import java.util.List;
@@ -19,13 +18,13 @@ import java.util.List;
  * Created by liferiet on 15.11.2018.
  */
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ListItemViewHolder> {
+public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ListItemViewHolder> {
 
-    private static final String TAG = ProductAdapter.class.getSimpleName();
+    private static final String TAG = ProductsAdapter.class.getSimpleName();
     private List<Product> mProductList;
     private OnListItemClickListener mOnListItemClickListener;
 
-    public ProductAdapter(OnListItemClickListener listener) {
+    public ProductsAdapter(OnListItemClickListener listener) {
         mOnListItemClickListener = listener;
     }
 

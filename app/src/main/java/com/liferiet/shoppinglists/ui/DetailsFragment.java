@@ -20,8 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.R;
 import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.databinding.FragmentDetailsBinding;
-import com.liferiet.shoppinglists.viewmodel.ProductDetailsViewModel;
-import com.liferiet.shoppinglists.viewmodel.ProductDetailsViewModelFactory;
+import com.liferiet.shoppinglists.viewmodel.DetailsViewModel;
+import com.liferiet.shoppinglists.viewmodel.DetailsViewModelFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +38,7 @@ public class DetailsFragment extends Fragment implements DatabaseReference.Compl
     private static final String USER_NAME = "user_name";
     private static final String LIST_KEY = "list_key";
 
-    private ProductDetailsViewModel mViewModel;
+    private DetailsViewModel mViewModel;
     private FragmentDetailsBinding mBinding;
 
     @Nullable
@@ -80,9 +80,9 @@ public class DetailsFragment extends Fragment implements DatabaseReference.Compl
             return;
         }
 
-        ProductDetailsViewModelFactory factory = new ProductDetailsViewModelFactory(
+        DetailsViewModelFactory factory = new DetailsViewModelFactory(
                 FirebaseDatabase.getInstance(), listKey);
-        mViewModel = new ViewModelProvider(this, factory).get(ProductDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this, factory).get(DetailsViewModel.class);
 
         mViewModel.setProduct(product);
 

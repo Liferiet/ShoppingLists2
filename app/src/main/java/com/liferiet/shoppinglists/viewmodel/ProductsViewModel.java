@@ -12,26 +12,26 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.liferiet.shoppinglists.repository.ListOfProductsRepository;
+import com.liferiet.shoppinglists.repository.ProductsRepository;
 import com.liferiet.shoppinglists.data.Product;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListOfProductsViewModel extends ViewModel implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class ProductsViewModel extends ViewModel implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = ListOfProductsViewModel.class.getSimpleName();
+    private static final String TAG = ProductsViewModel.class.getSimpleName();
 
-    private ListOfProductsRepository mRepository;
+    private ProductsRepository mRepository;
     private MutableLiveData<List<Product>> mProductList;
     private MutableLiveData<String> mUserName;
     private SharedPreferences mPreferences;
     private String mListName;
 
-    public ListOfProductsViewModel(FirebaseDatabase db, String listKey, SharedPreferences preferences) {
+    public ProductsViewModel(FirebaseDatabase db, String listKey, SharedPreferences preferences) {
 
         Log.d(TAG, "Preparing listOfProducts viewModel");
-        mRepository = ListOfProductsRepository.getInstance(db, listKey);
+        mRepository = ProductsRepository.getInstance(db, listKey);
         mPreferences = preferences;
 
         mUserName = new MutableLiveData<>();

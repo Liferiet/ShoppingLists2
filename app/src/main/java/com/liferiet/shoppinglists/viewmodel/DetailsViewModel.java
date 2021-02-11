@@ -4,18 +4,18 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.liferiet.shoppinglists.repository.ProductDetailsRepository;
+import com.liferiet.shoppinglists.repository.DetailsRepository;
 import com.liferiet.shoppinglists.data.Product;
 
-public class ProductDetailsViewModel extends ViewModel {
+public class DetailsViewModel extends ViewModel {
 
-    private static final String TAG = ProductDetailsViewModel.class.getSimpleName();
-    private ProductDetailsRepository mRepository;
+    private static final String TAG = DetailsViewModel.class.getSimpleName();
+    private DetailsRepository mRepository;
     private Product mProduct;
     private Long mLastTimeClicked;
 
-    public ProductDetailsViewModel(FirebaseDatabase db, String listKey) {
-        mRepository = ProductDetailsRepository.getInstance(db, listKey);
+    public DetailsViewModel(FirebaseDatabase db, String listKey) {
+        mRepository = DetailsRepository.getInstance(db, listKey);
         mLastTimeClicked = 0L;
     }
 

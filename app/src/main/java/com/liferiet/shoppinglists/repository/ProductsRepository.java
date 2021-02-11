@@ -10,24 +10,24 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.liferiet.shoppinglists.data.Product;
 
-public class ListOfProductsRepository {
+public class ProductsRepository {
 
-    private static final String TAG = ProductDetailsRepository.class.getSimpleName();
-    private static ListOfProductsRepository sInstance;
+    private static final String TAG = DetailsRepository.class.getSimpleName();
+    private static ProductsRepository sInstance;
     private FirebaseDatabase db;
     private String listKey;
 
 
-    private ListOfProductsRepository(FirebaseDatabase db, String listKey) {
+    private ProductsRepository(FirebaseDatabase db, String listKey) {
         this.db = db;
         this.listKey = listKey;
     }
 
-    public static ListOfProductsRepository getInstance(final FirebaseDatabase database, String listKey) {
+    public static ProductsRepository getInstance(final FirebaseDatabase database, String listKey) {
         if (sInstance == null) {
-            synchronized (ProductDetailsRepository.class) {
+            synchronized (DetailsRepository.class) {
                 if (sInstance == null) {
-                    sInstance = new ListOfProductsRepository(database, listKey);
+                    sInstance = new ProductsRepository(database, listKey);
                 }
             }
         }

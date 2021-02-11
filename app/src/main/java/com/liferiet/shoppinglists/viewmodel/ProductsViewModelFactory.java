@@ -8,19 +8,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.database.FirebaseDatabase;
 
-public class ProductDetailsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class ProductsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final FirebaseDatabase mDb;
     private final String mListReference;
+    private final SharedPreferences mPreferences;
 
-    public ProductDetailsViewModelFactory(FirebaseDatabase db, String listReference) {
+    public ProductsViewModelFactory(FirebaseDatabase db, String listReference, SharedPreferences preferences) {
         mDb = db;
         mListReference = listReference;
+        mPreferences = preferences;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ProductDetailsViewModel(mDb, mListReference);
+        return (T) new ProductsViewModel(mDb, mListReference, mPreferences);
     }
 }

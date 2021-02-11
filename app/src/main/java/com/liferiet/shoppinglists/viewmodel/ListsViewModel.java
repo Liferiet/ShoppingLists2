@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.data.ShoppingList;
-import com.liferiet.shoppinglists.repository.ListOfListsRepository;
+import com.liferiet.shoppinglists.repository.ListsRepository;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -20,16 +20,16 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListOfListsViewModel extends AndroidViewModel {
+public class ListsViewModel extends AndroidViewModel {
 
-    private static final String TAG = ListOfListsViewModel.class.getSimpleName();
+    private static final String TAG = ListsViewModel.class.getSimpleName();
     private static final String FILENAME = "lists.txt";
 
     private List<ShoppingList> mShoppingLists;
-    private ListOfListsRepository mRepository;
+    private ListsRepository mRepository;
     private Long mLastTimeClicked;
 
-    public ListOfListsViewModel(FirebaseDatabase db, String dbPath, Application application) {
+    public ListsViewModel(FirebaseDatabase db, String dbPath, Application application) {
         super(application);
         // TODO
 
@@ -38,7 +38,7 @@ public class ListOfListsViewModel extends AndroidViewModel {
 
         mShoppingLists = readListsFromFile();
         Log.d(TAG, "Lists: " + mShoppingLists.toString());
-        mRepository = ListOfListsRepository.getInstance(db, dbPath);
+        mRepository = ListsRepository.getInstance(db, dbPath);
         mLastTimeClicked = 0L;
     }
 

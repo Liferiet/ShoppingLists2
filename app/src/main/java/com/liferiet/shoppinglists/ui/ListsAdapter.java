@@ -16,13 +16,13 @@ import com.liferiet.shoppinglists.databinding.ListItemBinding;
 
 import java.util.List;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder> {
+public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ItemViewHolder> {
 
-    private static final String TAG = ListAdapter.class.getSimpleName();
+    private static final String TAG = ListsAdapter.class.getSimpleName();
     private List<ShoppingList> mListShoppingList;
-    private ListAdapter.OnListItemClickListener mOnListItemClickListener;
+    private ListsAdapter.OnListItemClickListener mOnListItemClickListener;
 
-    public ListAdapter(ListAdapter.OnListItemClickListener mOnListItemClickListener) {
+    public ListsAdapter(ListsAdapter.OnListItemClickListener mOnListItemClickListener) {
         this.mOnListItemClickListener = mOnListItemClickListener;
     }
 
@@ -43,7 +43,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         ListItemBinding binding = DataBindingUtil.inflate(
                 inflater, layoutIdForItem, parent, false);
 
-        return new ListAdapter.ItemViewHolder(binding);
+        return new ListsAdapter.ItemViewHolder(binding);
     }
 
     @Override
