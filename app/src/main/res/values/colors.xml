@@ -6,5 +6,7 @@
 
     <color name="bg_row_background">#fa315b</color>
     <color name="list_item_message">#b2b2b2</color>
-    <color name="white">#F0F3F4</color>
+    <color name="almost_white">#F0F3F4</color>
+
+    <color name="white">#FFFFFF</color>
 </resources>

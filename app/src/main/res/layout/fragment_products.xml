@@ -7,22 +7,22 @@
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.liferiet.shoppinglists.ui.ListOfListsActivity">
+        tools:context="com.liferiet.shoppinglists.ui.ProductsFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvLists"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLists"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_new_list"
+            android:id="@+id/fab_add_new_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
+            app:fabSize="normal"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_add_white_24dp"
-            app:fabSize="normal" />
+            android:src="@drawable/ic_add_white_24dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

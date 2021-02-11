@@ -1,35 +1,32 @@
 package com.liferiet.shoppinglists.ui;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.databinding.DataBindingUtil;
-
 import android.graphics.Color;
-import android.os.Parcelable;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
-import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
+import android.os.Parcelable;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.FirebaseDatabase;
-import com.liferiet.shoppinglists.data.Product;
 import com.liferiet.shoppinglists.R;
-import com.liferiet.shoppinglists.databinding.ActivityListOfProductsBinding;
+import com.liferiet.shoppinglists.data.Product;
+import com.liferiet.shoppinglists.databinding.FragmentProductsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListOfProductsViewModelFactory;
 
@@ -39,44 +36,49 @@ import java.util.List;
  * Created by liferiet on 26.01.2021.
  */
 
-public class ListOfProductsActivity extends AppCompatActivity
+public class ProductsFragment extends Fragment
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
         ProductAdapter.OnListItemClickListener {
 
-    private static final String TAG = ListOfProductsActivity.class.getSimpleName();
+    private static final String TAG = ProductsFragment.class.getSimpleName();
     public static final String EXTRA_PRODUCT = "product";
     private static final String LIST_KEY = "list_key";
     private static final String LIST_NAME = "list_name";
+    private static final String USER_NAME = "user_name";
 
-    private ActivityListOfProductsBinding mBinding;
+    private FragmentProductsBinding mBinding;
     private ListOfProductsViewModel mViewModel;
 
     private ProductAdapter mAdapter;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_of_products);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_products, container, false);
 
-        Intent intent = getIntent();
-        if (intent == null || !intent.hasExtra(LIST_NAME) || !intent.hasExtra(LIST_KEY)) {
-            finish();
-            return;
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        if (bundle == null || !bundle.containsKey(LIST_NAME) || !bundle.containsKey(LIST_KEY)) {
+            // co jesli dostane zly bundle?
         }
-        String listKey = intent.getStringExtra(LIST_KEY);
-        String listName = intent.getStringExtra(LIST_NAME);
-        //mViewModel.setListReference(reference);
+        String listKey = bundle.getString(LIST_KEY);
+        String listName = bundle.getString(LIST_NAME);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         ListOfProductsViewModelFactory factory = new ListOfProductsViewModelFactory(
                 FirebaseDatabase.getInstance(), listKey, sharedPreferences);
         mViewModel = new ViewModelProvider(this, factory).get(ListOfProductsViewModel.class);
 
         mViewModel.setListName(listName);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_list_of_products);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         RecyclerView mRecyclerView = mBinding.rvLists;
         mRecyclerView.setHasFixedSize(true);
@@ -84,12 +86,12 @@ public class ListOfProductsActivity extends AppCompatActivity
 
         mAdapter = new ProductAdapter( this);
 
-        mViewModel.getProductList().observe(this, products -> {
+        mViewModel.getProductList().observe(getActivity(), products -> {
             mAdapter.setProductList(products);
             mRecyclerView.setAdapter(mAdapter);
         });
 
-        setTitle(mViewModel.getListName());
+        getActivity().setTitle(mViewModel.getListName());
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
@@ -105,10 +107,20 @@ public class ListOfProductsActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ListOfProductsActivity.this, ProductDetailsActivity.class);
-                intent.putExtra(LIST_KEY, mViewModel.getListKey());
-                intent.putExtra("user", mViewModel.getUserName().getValue());
-                startActivity(intent);
+                Bundle bundle = new Bundle();
+                bundle.putString(LIST_KEY, mViewModel.getListKey());
+                bundle.putString(USER_NAME, mViewModel.getUserName().getValue());
+
+                Fragment productsFragment = new DetailsFragment();
+                productsFragment.setArguments(bundle);
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                        .replace(R.id.fragment_container, productsFragment) // give your fragment container id in first parameter
+                        .addToBackStack(null)  // if written, this transaction will be added to backstack
+                        .commit();
+
+                Toast.makeText(getActivity(), "Otworzy okienko nowego produktu: " + " klucz listy: " + mViewModel.getListKey(), Toast.LENGTH_LONG)
+                        .show();
             }
         });
     }
@@ -159,31 +171,21 @@ public class ListOfProductsActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
-            startActivity(startSettingsActivity);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onListItemClick(Product product) {
-        Intent intent = new Intent(this, ProductDetailsActivity.class);
-        intent.putExtra(LIST_KEY, mViewModel.getListKey());
-        intent.putExtra(EXTRA_PRODUCT, (Parcelable) product);
-        intent.putExtra("user", mViewModel.getUserName().getValue());
-        startActivity(intent);
-        Toast.makeText(this, "Wyswietli informacje o " + product.getName(), Toast.LENGTH_SHORT)
+        Bundle bundle = new Bundle();
+        bundle.putString(LIST_KEY, mViewModel.getListKey());
+        bundle.putParcelable(EXTRA_PRODUCT, (Parcelable) product);
+        //bundle.putString(USER_NAME, mViewModel.getUserName().getValue());
+
+        Fragment productsFragment = new DetailsFragment();
+        productsFragment.setArguments(bundle);
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+        transaction.replace(R.id.fragment_container, productsFragment ); // give your fragment container id in first parameter
+        transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+        transaction.commit();
+
+        Toast.makeText(getActivity(), "Wyswietli informacje o " + product.getName(), Toast.LENGTH_SHORT)
                 .show();
     }
 }

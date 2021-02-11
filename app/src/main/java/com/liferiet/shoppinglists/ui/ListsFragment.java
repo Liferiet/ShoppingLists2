@@ -1,18 +1,22 @@
 package com.liferiet.shoppinglists.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,62 +26,68 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.FirebaseDatabase;
 import com.liferiet.shoppinglists.R;
 import com.liferiet.shoppinglists.data.ShoppingList;
-import com.liferiet.shoppinglists.databinding.ActivityListOfListsBinding;
+import com.liferiet.shoppinglists.databinding.FragmentListsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListOfListsViewModelFactory;
 
-public class ListOfListsActivity extends AppCompatActivity
+public class ListsFragment extends Fragment
         implements ListAdapter.OnListItemClickListener {
 
-    private static final String TAG = ListOfListsActivity.class.getSimpleName();
+    private static final String TAG = ListsFragment.class.getSimpleName();
     private static final String LIST_KEY = "list_key";
     private static final String LIST_NAME = "list_name";
 
     private ListOfListsViewModel mViewModel;
-    private ActivityListOfListsBinding mBinding;
+    private FragmentListsBinding mBinding;
 
     private ListAdapter mAdapter;
 
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_lists, container, false);
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_of_lists);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         ListOfListsViewModelFactory factory = new ListOfListsViewModelFactory(
-                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists), getApplication());
+                FirebaseDatabase.getInstance(), getString(R.string.shoppingLists), getActivity().getApplication());
         mViewModel = new ViewModelProvider(this, factory).get(ListOfListsViewModel.class);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_list_of_lists);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
         RecyclerView mRecyclerView = mBinding.rvLists;
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
-
         mAdapter = new ListAdapter( this);
 
         mAdapter.setListList(mViewModel.getLists());
         mRecyclerView.setAdapter(mAdapter);
 
-/*        mViewModel.getLists().observe(this, list -> {
-            mAdapter.setListList(list);
-            mRecyclerView.setAdapter(mAdapter);
-        });*/
-        Log.d(TAG, "Adapter data: " + mAdapter.getListList());
-
-        setupFabOnClickListener();
-
+        setupFabOnClickListener(getActivity());
     }
+
 
     @Override
     public void onListItemClick(ShoppingList list) {
-        Intent intent = new Intent(this, ListOfProductsActivity.class);
-        intent.putExtra(LIST_KEY, mViewModel.getDbPath() + "/" + list.getKey());
-        intent.putExtra(LIST_NAME, list.getName());
-        startActivity(intent);
-        Toast.makeText(this, "Otworzy liste: " + list.getName() + " klucz: " + list.getKey(), Toast.LENGTH_LONG)
+        Bundle bundle = new Bundle();
+        bundle.putString(LIST_KEY, mViewModel.getDbPath() + "/" + list.getKey());
+        bundle.putString(LIST_NAME, list.getName());
+
+        Fragment productsFragment = new ProductsFragment();
+        productsFragment.setArguments(bundle);
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+        transaction.replace(R.id.fragment_container, productsFragment );
+        transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+        transaction.commit();
+
+        Toast.makeText(getActivity(), "Otworzy liste: " + list.getName() + " klucz: " + list.getKey(), Toast.LENGTH_LONG)
                 .show();
     }
 
@@ -85,9 +95,9 @@ public class ListOfListsActivity extends AppCompatActivity
      *  Setup OnClickListener to fab, which after click event creates new AlertDialog,
      *  shows it, and change positiveClickButton onClickListener right away
      */
-    private void setupFabOnClickListener() {
+    private void setupFabOnClickListener(Context context) {
         mBinding.fabAddNewList.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Title")
                     .setView(R.layout.dialog_create_list)
                     .setPositiveButton("Create", new DialogInterface.OnClickListener()
