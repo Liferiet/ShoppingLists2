@@ -9,15 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,8 +34,6 @@ public class ListsFragment extends Fragment
         implements ListsAdapter.OnListItemClickListener {
 
     private static final String TAG = ListsFragment.class.getSimpleName();
-    private static final String LIST_KEY = "list_key";
-    private static final String LIST_NAME = "list_name";
 
     private ListsViewModel mViewModel;
     private FragmentListsBinding mBinding;
@@ -75,20 +73,10 @@ public class ListsFragment extends Fragment
 
     @Override
     public void onListItemClick(ShoppingList list) {
-        Bundle bundle = new Bundle();
-        bundle.putString(LIST_KEY, mViewModel.getDbPath() + "/" + list.getKey());
-        bundle.putString(LIST_NAME, list.getName());
-
-        Fragment productsFragment = new ProductsFragment();
-        productsFragment.setArguments(bundle);
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
-        transaction.replace(R.id.fragment_container, productsFragment );
-        transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
-        transaction.commit();
-
-        Toast.makeText(getActivity(), "Otworzy liste: " + list.getName() + " klucz: " + list.getKey(), Toast.LENGTH_LONG)
-                .show();
+        String listKey = mViewModel.getDbPath() + "/" + list.getKey();
+        String listName = list.getName();
+        NavDirections action = ListsFragmentDirections.actionListsFragmentToProductsFragment(listKey, listName);
+        NavHostFragment.findNavController(this).navigate(action);
     }
 
     /**

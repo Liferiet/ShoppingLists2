@@ -3,19 +3,18 @@ package com.liferiet.shoppinglists.ui;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,10 +40,6 @@ public class ProductsFragment extends Fragment
         ProductsAdapter.OnListItemClickListener {
 
     private static final String TAG = ProductsFragment.class.getSimpleName();
-    public static final String EXTRA_PRODUCT = "product";
-    private static final String LIST_KEY = "list_key";
-    private static final String LIST_NAME = "list_name";
-    private static final String USER_NAME = "user_name";
 
     private FragmentProductsBinding mBinding;
     private ProductsViewModel mViewModel;
@@ -65,11 +60,14 @@ public class ProductsFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
 
         Bundle bundle = getArguments();
-        if (bundle == null || !bundle.containsKey(LIST_NAME) || !bundle.containsKey(LIST_KEY)) {
+        if (bundle == null) {
             // co jesli dostane zly bundle?
+            Log.d(TAG, "no arguments received");
         }
-        String listKey = bundle.getString(LIST_KEY);
-        String listName = bundle.getString(LIST_NAME);
+
+        ProductsFragmentArgs args =  ProductsFragmentArgs.fromBundle(getArguments());
+        String listKey = args.getListKey();
+        String listName = args.getListName();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         ProductsViewModelFactory factory = new ProductsViewModelFactory(
@@ -103,24 +101,18 @@ public class ProductsFragment extends Fragment
     }
 
     private void setupFabOnClickListener() {
+        Fragment fragment = this;
         FloatingActionButton fab = (FloatingActionButton) mBinding.fabAddNewProduct;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString(LIST_KEY, mViewModel.getListKey());
-                bundle.putString(USER_NAME, mViewModel.getUserName().getValue());
+                String listKey = mViewModel.getListKey();
+                String userName = mViewModel.getUserName().getValue();
+                Product product = new Product();
+                product.setUser(userName);
 
-                Fragment productsFragment = new DetailsFragment();
-                productsFragment.setArguments(bundle);
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
-                        .replace(R.id.fragment_container, productsFragment) // give your fragment container id in first parameter
-                        .addToBackStack(null)  // if written, this transaction will be added to backstack
-                        .commit();
-
-                Toast.makeText(getActivity(), "Otworzy okienko nowego produktu: " + " klucz listy: " + mViewModel.getListKey(), Toast.LENGTH_LONG)
-                        .show();
+                NavDirections action = ProductsFragmentDirections.actionProductsFragmentToDetailsFragment(listKey, product, userName);
+                NavHostFragment.findNavController(fragment).navigate(action);
             }
         });
     }
@@ -172,20 +164,10 @@ public class ProductsFragment extends Fragment
 
     @Override
     public void onListItemClick(Product product) {
-        Bundle bundle = new Bundle();
-        bundle.putString(LIST_KEY, mViewModel.getListKey());
-        bundle.putParcelable(EXTRA_PRODUCT, (Parcelable) product);
-        //bundle.putString(USER_NAME, mViewModel.getUserName().getValue());
+        String listKey = mViewModel.getListKey();
+        String userName = mViewModel.getUserName().getValue();
 
-        Fragment productsFragment = new DetailsFragment();
-        productsFragment.setArguments(bundle);
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
-        transaction.replace(R.id.fragment_container, productsFragment ); // give your fragment container id in first parameter
-        transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
-        transaction.commit();
-
-        Toast.makeText(getActivity(), "Wyswietli informacje o " + product.getName(), Toast.LENGTH_SHORT)
-                .show();
+        NavDirections action = ProductsFragmentDirections.actionProductsFragmentToDetailsFragment(listKey, product, userName);
+        NavHostFragment.findNavController(this).navigate(action);
     }
 }

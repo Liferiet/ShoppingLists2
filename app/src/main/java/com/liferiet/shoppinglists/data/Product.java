@@ -4,7 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by liferiet on 15.11.2018.
@@ -19,6 +22,14 @@ public class Product implements Serializable, Parcelable {
     private String user;
 
     public Product() {
+        id = "";
+        name = "";
+        message = "";
+        user = "";
+
+        Date currentDate = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", new Locale("en"));
+        date = formatter.format(currentDate);
     }
 
     public Product(String name, String message, String date, String user) {

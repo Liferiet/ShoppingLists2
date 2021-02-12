@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseError;
@@ -23,10 +24,6 @@ import com.liferiet.shoppinglists.databinding.FragmentDetailsBinding;
 import com.liferiet.shoppinglists.viewmodel.DetailsViewModel;
 import com.liferiet.shoppinglists.viewmodel.DetailsViewModelFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * Created by liferiet on 15.11.2018.
  */
@@ -34,9 +31,6 @@ import java.util.Locale;
 public class DetailsFragment extends Fragment implements DatabaseReference.CompletionListener {
 
     private static final String TAG = DetailsFragment.class.getSimpleName();
-    private static final String EXTRA_PRODUCT = "product";
-    private static final String USER_NAME = "user_name";
-    private static final String LIST_KEY = "list_key";
 
     private DetailsViewModel mViewModel;
     private FragmentDetailsBinding mBinding;
@@ -54,31 +48,15 @@ public class DetailsFragment extends Fragment implements DatabaseReference.Compl
         super.onActivityCreated(savedInstanceState);
 
         Bundle bundle = getArguments();
-
-        if (bundle == null || !bundle.containsKey(LIST_KEY)) {
-            Log.d(TAG, "Nie otrzymano klucza listy");
+        if (bundle == null) {
+            Log.d(TAG, "No arguments received");
             return;
         }
 
-        String listKey = bundle.getString(LIST_KEY);
+        DetailsFragmentArgs args = DetailsFragmentArgs.fromBundle(bundle);
+        String listKey = args.getListKey();
 
-        Product product = null;
-
-        if (bundle.containsKey(EXTRA_PRODUCT)) {
-            product = bundle.getParcelable(EXTRA_PRODUCT);
-        } else if (bundle.containsKey(USER_NAME)) {
-            product = new Product();
-            product.setId("");
-            product.setUser(bundle.getString(USER_NAME));
-
-            Date date = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", new Locale("en"));
-            product.setDate(formatter.format(date));
-
-        } else {
-            Log.d(TAG, "Bundle nie zawieral ani produktu ani usera");
-            return;
-        }
+        Product product = args.getProduct();
 
         DetailsViewModelFactory factory = new DetailsViewModelFactory(
                 FirebaseDatabase.getInstance(), listKey);
@@ -126,16 +104,8 @@ public class DetailsFragment extends Fragment implements DatabaseReference.Compl
     @Override
     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
         if (databaseError == null) {
-            getParentFragmentManager().popBackStackImmediate();
+            NavHostFragment.findNavController(this).navigateUp();
         }
     }
 
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

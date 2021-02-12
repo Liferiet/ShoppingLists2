@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listsFragment">
+
+    <fragment
+        android:id="@+id/listsFragment"
+        android:name="com.liferiet.shoppinglists.ui.ListsFragment"
+        android:label="ListsFragment" >
+        <action
+            android:id="@+id/action_listsFragment_to_productsFragment"
+            app:destination="@id/productsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productsFragment"
+        android:name="com.liferiet.shoppinglists.ui.ProductsFragment"
+        android:label="ProductsFragment" >
+        <argument android:name="listKey"/>
+        <argument android:name="listName"/>
+        <action
+            android:id="@+id/action_productsFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.liferiet.shoppinglists.ui.DetailsFragment"
+        android:label="DetailsFragment" >
+        <argument android:name="listKey" />
+        <argument android:name="product"
+            app:argType="com.liferiet.shoppinglists.data.Product"/>
+        <argument android:name="userName"/>
+
+    </fragment>
+</navigation>
