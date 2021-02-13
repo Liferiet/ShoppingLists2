@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/listsFragment">
 
     <fragment
         android:id="@+id/listsFragment"
         android:name="com.liferiet.shoppinglists.ui.ListsFragment"
-        android:label="ListsFragment" >
+        android:label="Lists"
+        tools:layout="@layout/fragment_lists">
         <action
             android:id="@+id/action_listsFragment_to_productsFragment"
             app:destination="@id/productsFragment" />
@@ -15,7 +17,8 @@
     <fragment
         android:id="@+id/productsFragment"
         android:name="com.liferiet.shoppinglists.ui.ProductsFragment"
-        android:label="ProductsFragment" >
+        android:label="Products"
+        tools:layout="@layout/fragment_products">
         <argument android:name="listKey"/>
         <argument android:name="listName"/>
         <action
@@ -25,11 +28,16 @@
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.liferiet.shoppinglists.ui.DetailsFragment"
-        android:label="DetailsFragment" >
+        android:label="Details"
+        tools:layout="@layout/fragment_details">
         <argument android:name="listKey" />
         <argument android:name="product"
             app:argType="com.liferiet.shoppinglists.data.Product"/>
         <argument android:name="userName"/>
 
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.liferiet.shoppinglists.ui.SettingsFragment"
+        android:label="Settings"/>
 </navigation>

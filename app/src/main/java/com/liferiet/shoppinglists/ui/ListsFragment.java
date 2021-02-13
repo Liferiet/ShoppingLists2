@@ -2,10 +2,14 @@ package com.liferiet.shoppinglists.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,11 +17,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,6 +49,7 @@ public class ListsFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_lists, container, false);
 
@@ -68,8 +75,10 @@ public class ListsFragment extends Fragment
         mRecyclerView.setAdapter(mAdapter);
 
         setupFabOnClickListener(getActivity());
-    }
 
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        Log.d(TAG, "Toolbar menu: " + toolbar.getMenu());
+    }
 
     @Override
     public void onListItemClick(ShoppingList list) {
@@ -146,5 +155,23 @@ public class ListsFragment extends Fragment
         /* // Uncomment this if list have to be opened immediately after creation
         ShoppingList list = mViewModel.getLists().get(mViewModel.getLists().size() - 1);
         onListItemClick(list);*/
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        Log.d(TAG, "onCreateOptionsMenu: menu: " + menu);
+        inflater.inflate(R.menu.main_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_settings){
+            NavDirections action = ListsFragmentDirections.actionListsFragmentToSettingsFragment();
+            NavHostFragment.findNavController(this).navigate(action);
+            return true;
+        }
+        return NavigationUI.onNavDestinationSelected(item, NavHostFragment.findNavController(this))
+           || super.onOptionsItemSelected(item);
     }
 }
