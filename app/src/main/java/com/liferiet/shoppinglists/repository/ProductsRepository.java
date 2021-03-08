@@ -23,13 +23,9 @@ public class ProductsRepository {
         this.listKey = listKey;
     }
 
-    public static ProductsRepository getInstance(final FirebaseDatabase database, String listKey) {
+    public static synchronized ProductsRepository getInstance(final FirebaseDatabase database, String listKey) {
         if (sInstance == null) {
-            synchronized (DetailsRepository.class) {
-                if (sInstance == null) {
-                    sInstance = new ProductsRepository(database, listKey);
-                }
-            }
+            sInstance = new ProductsRepository(database, listKey);
         }
         sInstance.listKey = listKey;
         return sInstance;

@@ -26,8 +26,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
-            // final View foregroundView = ((ListAdapter.ListItemViewHolder) viewHolder).viewForeground;
-            final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+            final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).getBinding().viewForeground;
             getDefaultUIUtil().onSelected(foregroundView);
         }
     }
@@ -36,14 +35,14 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
                                 RecyclerView.ViewHolder viewHolder, float dX, float dY,
                                 int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+        final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).getBinding().viewForeground;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+        final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).getBinding().viewForeground;
         getDefaultUIUtil().clearView(foregroundView);
     }
 
@@ -51,7 +50,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onChildDraw(Canvas c, RecyclerView recyclerView,
                             RecyclerView.ViewHolder viewHolder, float dX, float dY,
                             int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).binding.viewForeground;
+        final View foregroundView = ((ProductsAdapter.ListItemViewHolder) viewHolder).getBinding().viewForeground;
 
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
@@ -60,11 +59,6 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
-    }
-
-    @Override
-    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
-        return super.convertToAbsoluteDirection(flags, layoutDirection);
     }
 
     public interface RecyclerItemTouchHelperListener {

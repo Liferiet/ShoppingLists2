@@ -66,7 +66,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ItemViewHold
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ListItemBinding binding;
+        private ListItemBinding binding;
 
         public ItemViewHolder(ListItemBinding binding) {
             super(binding.getRoot());

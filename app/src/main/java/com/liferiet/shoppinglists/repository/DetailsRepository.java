@@ -20,13 +20,9 @@ public class DetailsRepository {
         this.listKey = listKey;
     }
 
-    public static DetailsRepository getInstance(final FirebaseDatabase database, String listKey) {
+    public static synchronized DetailsRepository getInstance(final FirebaseDatabase database, String listKey) {
         if (sInstance == null) {
-            synchronized (DetailsRepository.class) {
-                if (sInstance == null) {
-                    sInstance = new DetailsRepository(database, listKey);
-                }
-            }
+            sInstance = new DetailsRepository(database, listKey);
         }
         sInstance.listKey = listKey;
         return sInstance;

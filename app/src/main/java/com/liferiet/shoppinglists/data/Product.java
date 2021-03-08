@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by liferiet on 15.11.2018.
@@ -83,7 +84,7 @@ public class Product implements Serializable, Parcelable {
         this.user = user;
     }
 
-    public HashMap<String, String> toFirebaseObject() {
+    public Map<String, String> toFirebaseObject() {
         HashMap<String, String> product = new HashMap<>();
         product.put("name", name);
         product.put("message", message);

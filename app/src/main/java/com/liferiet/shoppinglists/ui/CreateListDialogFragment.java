@@ -2,32 +2,24 @@ package com.liferiet.shoppinglists.ui;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ObservableInt;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.liferiet.shoppinglists.R;
 import com.liferiet.shoppinglists.databinding.DialogCreateListBinding;
+
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 public class CreateListDialogFragment extends DialogFragment {
 
@@ -85,33 +77,22 @@ public class CreateListDialogFragment extends DialogFragment {
         final AlertDialog d = (AlertDialog)getDialog();
         if(d != null)
         {
-            Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
-            positiveButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view) {
-                    Log.d("FAB_CLICK", "yeeey correct On click Event");
-                    String value = listNameEditText.getText().toString();
-                    if (value.isEmpty()){
-                        Log.d(TAG, "onClick, empty value");
-                        textInputLayout.setError("Nazwa nie moze byc pusta");
+            Button positiveButton = d.getButton(BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(view -> {
+                Log.d("FAB_CLICK", "yeeey correct On click Event");
+                String value = listNameEditText.getText().toString();
+                if (value.isEmpty()){
+                    Log.d(TAG, "onClick, empty value");
+                    textInputLayout.setError("Nazwa nie moze byc pusta");
 
 
-                    } else {
-                        Log.d(TAG, "onClick, value: " + value);
-                        //onDialogPositiveClick(CreateListDialogFragment.this);
-                        d.dismiss();
-                    }
+                } else {
+                    Log.d(TAG, "onClick, value: " + value);
+                    //onDialogPositiveClick(CreateListDialogFragment.this);
+                    d.dismiss();
                 }
             });
         }
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
 
     }
 

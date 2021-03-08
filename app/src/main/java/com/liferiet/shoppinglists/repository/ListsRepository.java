@@ -14,13 +14,9 @@ public class ListsRepository {
         this.mDbPath = reference;
     }
 
-    public static ListsRepository getInstance(final FirebaseDatabase database, String reference) {
+    public static synchronized ListsRepository getInstance(final FirebaseDatabase database, String reference) {
         if (sInstance == null) {
-            synchronized (DetailsRepository.class) {
-                if (sInstance == null) {
-                    sInstance = new ListsRepository(database, reference);
-                }
-            }
+            sInstance = new ListsRepository(database, reference);
         }
         return sInstance;
     }

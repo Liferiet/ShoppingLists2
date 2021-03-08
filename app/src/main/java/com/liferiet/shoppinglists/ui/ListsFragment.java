@@ -1,8 +1,6 @@
 package com.liferiet.shoppinglists.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -36,6 +34,8 @@ import com.liferiet.shoppinglists.databinding.FragmentListsBinding;
 import com.liferiet.shoppinglists.viewmodel.ListsViewModel;
 import com.liferiet.shoppinglists.viewmodel.ListsViewModelFactory;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+
 public class ListsFragment extends Fragment
         implements ListsAdapter.OnListItemClickListener {
 
@@ -43,8 +43,6 @@ public class ListsFragment extends Fragment
 
     private ListsViewModel mViewModel;
     private FragmentListsBinding mBinding;
-
-    private ListsAdapter mAdapter;
 
     @Nullable
     @Override
@@ -69,10 +67,10 @@ public class ListsFragment extends Fragment
         RecyclerView mRecyclerView = mBinding.rvLists;
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new ListsAdapter( this);
+        ListsAdapter adapter = new ListsAdapter( this);
 
-        mAdapter.setListList(mViewModel.getLists());
-        mRecyclerView.setAdapter(mAdapter);
+        adapter.setListList(mViewModel.getLists());
+        mRecyclerView.setAdapter(adapter);
 
         setupFabOnClickListener(getActivity());
 
@@ -97,13 +95,8 @@ public class ListsFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Title")
                     .setView(R.layout.dialog_create_list)
-                    .setPositiveButton("Create", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            //Do nothing here because we override this button later to change the close behaviour.
-                        }
+                    .setPositiveButton("Create", (dialog, which) -> {
+                        //Do nothing here because we override this button later to change the close behaviour.
                     })
                     .create();
             final AlertDialog dialog = builder.create();
@@ -111,33 +104,30 @@ public class ListsFragment extends Fragment
             dialog.show();
             TextInputLayout textInputLayout = dialog.findViewById(R.id.text_input_layout);
             TextInputEditText listNameEditText = dialog.findViewById(R.id.dialog_list_name);
-            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            Button button = dialog.getButton(BUTTON_POSITIVE);
 
             if (textInputLayout == null || listNameEditText == null) {
                 Log.d(TAG, "views are null; abort abort");
                 return;
             }
 
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (SystemClock.elapsedRealtime() - mViewModel.getLastTimeClicked() < 3000){
-                        return;
-                    }
-                    mViewModel.setLastTimeClicked(SystemClock.elapsedRealtime());
+            button.setOnClickListener(view1 -> {
+                if (SystemClock.elapsedRealtime() - mViewModel.getLastTimeClicked() < 3000){
+                    return;
+                }
+                mViewModel.setLastTimeClicked(SystemClock.elapsedRealtime());
 
-                    Log.d("FAB_CLICK", "yeeey correct On click Event");
-                    String value = listNameEditText.getText().toString();
-                    if (value.isEmpty()){
-                        Log.d(TAG, "onClick, empty value");
-                        textInputLayout.setError("Nazwa nie moze byc pusta");
+                Log.d("FAB_CLICK", "yeeey correct On click Event");
+                String value = listNameEditText.getText().toString();
+                if (value.isEmpty()){
+                    Log.d(TAG, "onClick, empty value");
+                    textInputLayout.setError("Nazwa nie moze byc pusta");
 
 
-                    } else {
-                        Log.d(TAG, "onClick, value: " + value);
-                        onDialogPositiveClick(value);
-                        dialog.dismiss();
-                    }
+                } else {
+                    Log.d(TAG, "onClick, value: " + value);
+                    onDialogPositiveClick(value);
+                    dialog.dismiss();
                 }
             });
 

@@ -86,7 +86,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ListIt
 
     public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-        public ProductItemBinding binding;
+        private ProductItemBinding binding;
 
         public ListItemViewHolder(ProductItemBinding binding) {
             super(binding.getRoot());
@@ -110,6 +110,10 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ListIt
                 Log.v(TAG, "onLongClick listener index out of bond");
                 return false;
             }
+        }
+
+        public ProductItemBinding getBinding() {
+            return binding;
         }
     }
 }

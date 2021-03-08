@@ -70,14 +70,11 @@ public class ListsViewModel extends AndroidViewModel {
     }
 
     private boolean writeListToFile(ShoppingList list) {
-        try {
-            FileOutputStream fileOutputStream = getApplication().openFileOutput(FILENAME, Context.MODE_APPEND);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-            String data = list.getKey() + ":" + list.getName() + "\n";
+        try (FileOutputStream fileOutputStream = getApplication().openFileOutput(FILENAME, Context.MODE_APPEND);
+             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream)) {
 
+            String data = list.getKey() + ":" + list.getName() + "\n";
             outputStreamWriter.write(data);
-            outputStreamWriter.close();
-            fileOutputStream.close();
             return true;
         }
         catch (IOException e) {
@@ -88,25 +85,23 @@ public class ListsViewModel extends AndroidViewModel {
 
     private List<ShoppingList> readListsFromFile() {
         ArrayList<ShoppingList> shoppingLists = new ArrayList<>();
-        try {
-            InputStream inputStream = getApplication().openFileInput(FILENAME);
+
+        try (InputStream inputStream = getApplication().openFileInput(FILENAME);
+             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
             Log.d(TAG, "Reading lists from file");
 
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+            String receiveString = "";
 
-                String[] oneListArray;
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                     oneListArray = receiveString.split(":");
-                     ShoppingList list = new ShoppingList();
-                     list.setKey(oneListArray[0].trim());
-                     list.setName(oneListArray[1].trim());
-                     shoppingLists.add(list);
-                }
-                inputStream.close();
+            String[] oneListArray;
+            while ( (receiveString = bufferedReader.readLine()) != null ) {
+                 oneListArray = receiveString.split(":");
+                 ShoppingList list = new ShoppingList();
+                 list.setKey(oneListArray[0].trim());
+                 list.setName(oneListArray[1].trim());
+                 shoppingLists.add(list);
             }
+
         }
         catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());

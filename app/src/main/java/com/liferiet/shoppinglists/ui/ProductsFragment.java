@@ -31,6 +31,8 @@ import com.liferiet.shoppinglists.viewmodel.ProductsViewModelFactory;
 
 import java.util.List;
 
+import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG;
+
 /**
  * Created by liferiet on 26.01.2021.
  */
@@ -102,18 +104,15 @@ public class ProductsFragment extends Fragment
 
     private void setupFabOnClickListener() {
         Fragment fragment = this;
-        FloatingActionButton fab = (FloatingActionButton) mBinding.fabAddNewProduct;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String listKey = mViewModel.getListKey();
-                String userName = mViewModel.getUserName().getValue();
-                Product product = new Product();
-                product.setUser(userName);
+        FloatingActionButton fab = mBinding.fabAddNewProduct;
+        fab.setOnClickListener(view -> {
+            String listKey = mViewModel.getListKey();
+            String userName = mViewModel.getUserName().getValue();
+            Product product = new Product();
+            product.setUser(userName);
 
-                NavDirections action = ProductsFragmentDirections.actionProductsFragmentToDetailsFragment(listKey, product, userName);
-                NavHostFragment.findNavController(fragment).navigate(action);
-            }
+            NavDirections action = ProductsFragmentDirections.actionProductsFragmentToDetailsFragment(listKey, product, userName);
+            NavHostFragment.findNavController(fragment).navigate(action);
         });
     }
 
@@ -136,16 +135,11 @@ public class ProductsFragment extends Fragment
 
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar
-                    .make(mBinding.coordinatorLayout, name + " " + getString(R.string.info_deleted), Snackbar
-                            .LENGTH_LONG);
-            snackbar.setAction(getString(R.string.undo).toUpperCase(), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    // undo is selected, restore the deleted item
-                    mAdapter.restoreItem(deletedItem, deletedIndex);
-                }
-            });
+                    .make(mBinding.coordinatorLayout, name + " " + getString(R.string.info_deleted), LENGTH_LONG);
+            snackbar.setAction(getString(R.string.undo).toUpperCase(), view ->
+                // undo is selected, restore the deleted item
+                mAdapter.restoreItem(deletedItem, deletedIndex)
+            );
 
             snackbar.addCallback(new Snackbar.Callback() {
                 @Override
